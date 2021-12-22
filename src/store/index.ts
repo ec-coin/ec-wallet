@@ -6,8 +6,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        isWalletUnlocked: false,
-        hasAWallet: false,
+        isWalletUnlocked: true,
+        hasAWallet: true,
         incorrectPassword: false,
         wallets: []
     },

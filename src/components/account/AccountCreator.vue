@@ -1,9 +1,12 @@
 <template>
-    <div class="container-creator">
-        <h4>Create new account</h4>
-        <textarea disabled="disabled" v-model="mnemonic" v-if="mnemonic !== ''"></textarea>
-        <button v-on:click="generate()">Generate</button>
-    </div>
+    <b-card header="Add new account">
+        <b-card-text>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</b-card-text>
+    </b-card>
+<!--    <div class="container-creator">-->
+<!--        <h4>Create new account</h4>-->
+<!--        <textarea disabled="disabled" v-model="mnemonic" v-if="mnemonic !== ''"></textarea>-->
+<!--        <button v-on:click="generate()">Generate</button>-->
+<!--    </div>-->
 </template>
 
 <script lang="ts">

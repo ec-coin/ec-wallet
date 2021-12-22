@@ -1,13 +1,16 @@
 <template>
-    <div class="container">
-        <div class="left">
-            <AccountCreator></AccountCreator>
-            <AccountImporter></AccountImporter>
-        </div>
-        <div class="right">
-            <AccountList></AccountList>
-        </div>
-    </div>
+    <b-container>
+        <b-row>
+            <b-col>
+                <AccountCreator></AccountCreator>
+                <div class="my-4"></div>
+                <AccountImporter></AccountImporter>
+            </b-col>
+            <b-col cols="8">
+                <AccountList></AccountList>
+            </b-col>
+        </b-row>
+    </b-container>
 </template>
 
 <script lang="ts">
@@ -27,16 +30,5 @@ export default class Accounts extends Vue {}
 </script>
 
 <style lang="scss" scoped>
-.container {
-    display: flex;
-    padding: 0 200px;
 
-    .left {
-        width: 30%;
-    }
-
-    .right {
-        width: 70%;
-    }
-}
 </style>

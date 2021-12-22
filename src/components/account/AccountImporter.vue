@@ -1,9 +1,12 @@
 <template>
-    <div class="container-importer">
-        <h4>Import account</h4>
-        <textarea></textarea><br>
-        <button>Import</button>
-    </div>
+    <b-card header="Import existing account">
+        <b-card-text>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</b-card-text>
+    </b-card>
+<!--    <div class="container-importer">-->
+<!--        <h4>Import account</h4>-->
+<!--        <textarea></textarea><br>-->
+<!--        <button>Import</button>-->
+<!--    </div>-->
 </template>
 
 <script lang="ts">
