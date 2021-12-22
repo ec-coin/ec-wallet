@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import {Storage} from "@/service/storage";
+import {Wallet} from "@/service/wallet";
 
 Vue.use(Vuex)
 
@@ -29,7 +30,8 @@ export default new Vuex.Store({
         addWallet(state, { name, seedphrase }) {
             (state as any).wallets.push({
                 name,
-                seedphrase
+                seedphrase,
+                address: Wallet.getAddress(seedphrase)
             })
         }
     },
@@ -59,11 +61,7 @@ export default new Vuex.Store({
                 return;
             }
 
-            console.log(wallets);
-
             commit('unlockWallet', JSON.parse(wallets));
-
-            console.log(state.wallets);
         }
     },
     modules: {}
