@@ -6,8 +6,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        isWalletUnlocked: true,
-        hasAWallet: true,
+        isWalletUnlocked: false,
+        hasAWallet: false,
         incorrectPassword: false,
         wallets: []
     },
@@ -26,8 +26,9 @@ export default new Vuex.Store({
             state.hasAWallet = true;
         },
 
-        addWallet(state, seedphrase) {
+        addWallet(state, { name, seedphrase }) {
             (state as any).wallets.push({
+                name,
                 seedphrase
             })
         }
@@ -42,14 +43,15 @@ export default new Vuex.Store({
             commit('hasAWallet');
         },
 
-        async createWallet({ commit, state }, { seedphrase, password }) {
-            commit('addWallet', seedphrase);
+        async createWallet({ commit, state }, { name, seedphrase, password }) {
+            commit('addWallet', { name, seedphrase });
             const data = JSON.stringify(state.wallets);
             Storage.saveEncrypted('wallets', data, password);
             commit('hasAWallet');
+            commit('unlockWallet', state.wallets);
         },
 
-        async unlockWallet({ commit }, password) {
+        async unlockWallet({ commit, state }, password) {
             const wallets = Storage.getEncrypted('wallets', password);
 
             if (wallets == null) {
@@ -57,7 +59,11 @@ export default new Vuex.Store({
                 return;
             }
 
+            console.log(wallets);
+
             commit('unlockWallet', JSON.parse(wallets));
+
+            console.log(state.wallets);
         }
     },
     modules: {}

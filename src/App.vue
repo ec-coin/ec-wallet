@@ -1,13 +1,6 @@
 <template>
     <div id="app">
         <template v-if="hasAWallet && isWalletUnlocked">
-            <!--            <div id="nav">-->
-            <!--                <router-link to="/">Accounts</router-link>-->
-            <!--                |-->
-            <!--                <router-link to="/transactions">Transactions</router-link>-->
-            <!--            </div>-->
-            <!--            <router-view/>-->
-
             <b-container>
                 <b-navbar toggleable="lg" type="dark" variant="primary">
                     <b-navbar-brand href="#">EC Wallet</b-navbar-brand>
@@ -24,14 +17,15 @@
                 </b-navbar>
                 <div class="my-4"></div>
                 <router-view></router-view>
+                <div class="my-4"></div>
             </b-container>
         </template>
-        <!--        <template v-if="hasAWallet && !isWalletUnlocked">-->
-        <!--            <UnlockWallet></UnlockWallet>-->
-        <!--        </template>-->
-        <!--        <template v-if="!hasAWallet && !isWalletUnlocked">-->
-        <!--            <SetupWallet></SetupWallet>-->
-        <!--        </template>-->
+        <template v-if="hasAWallet && !isWalletUnlocked">
+            <UnlockWallet></UnlockWallet>
+        </template>
+        <template v-if="!hasAWallet && !isWalletUnlocked">
+            <SetupWallet></SetupWallet>
+        </template>
     </div>
 </template>
 

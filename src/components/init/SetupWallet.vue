@@ -70,6 +70,7 @@ export default class SetupWallet extends Vue {
         await AppStorage.createPassword('wallets', this.password);
 
         await this.createWallet({
+            name: 'Main Wallet',
             seedphrase: this.seedphrase,
             password: this.password
         });
