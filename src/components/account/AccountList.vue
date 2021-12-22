@@ -2,9 +2,9 @@
     <div class="accordion" role="tablist">
         <b-card no-body class="mb-1" v-for="wallet in wallets" :key="wallet.seedphrase">
             <b-card-header header-tag="header" class="p-1" role="tab">
-                <b-button block v-b-toggle="'accordion' + wallet.name" variant="primary">{{ wallet.name }} (100 EC)</b-button>
+                <b-button block v-b-toggle="'accordion' + wallet.address" variant="primary">{{ wallet.name }} (100 EC)</b-button>
             </b-card-header>
-            <b-collapse :id="'accordion' + wallet.name" visible accordion="my-accordion" role="tabpanel">
+            <b-collapse :id="'accordion' + wallet.address" visible accordion="my-accordion" role="tabpanel">
                 <b-card-body>
                     <h4>Transactions</h4>
                     <b-table striped hover :items="items"></b-table>
