@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import Accounts from '../views/Accounts.vue'
 import Send from "@/views/Send.vue";
+import Receive from "@/views/Receive.vue";
 
 Vue.use(VueRouter)
 
@@ -16,6 +17,12 @@ const routes: Array<RouteConfig> = [
     path: '/send',
     name: 'Send',
     component: Send
+  },
+
+  {
+    path: '/receive',
+    name: 'Receive',
+    component: Receive
   }
 ]
 
