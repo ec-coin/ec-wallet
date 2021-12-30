@@ -30,20 +30,21 @@ export default class AccountList extends Vue {
   public items = [];
 
   public getItems(address : string) {
-    axios.get(`http://localhost:4567/transactions/` + address)
+    axios.get(`http://localhost:4567/transactions?from=` + '**addressFrom**')
         .then(response => {
-          const data = response.data.data;
-          this.items = [];
+          if (response.data.status == "SUCCESS") {
+            const data = response.data.data;
+            this.items = [];
 
-          data.forEach(obj => {
-            this.items.push({ from: obj.from, to: obj.to, amount: obj.amount, timestamp: obj.timestamp.iMillis });
-          });
+            data.forEach(obj => {
+              this.items.push({from: obj.from, to: obj.to, amount: obj.amount, timestamp: obj.timestamp.iMillis});
+            });
+          }
         })
         .catch(e => {
           console.log(e);
         });
   }
-
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
