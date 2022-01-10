@@ -9,10 +9,10 @@
 
                     <b-collapse id="nav-collapse" is-nav>
                         <b-navbar-nav>
-                            <b-nav-item to="/">Accounts</b-nav-item>
-                            <b-nav-item to="/send">Send</b-nav-item>
-                            <b-nav-item to="/receive">Receive</b-nav-item>
-                          <b-nav-item to="/Stake">Stake</b-nav-item>
+                            <b-nav-item exact-active-class="active" to="/">Accounts</b-nav-item>
+                            <b-nav-item exact-active-class="active" to="/send">Send</b-nav-item>
+                            <b-nav-item exact-active-class="active" to="/receive">Receive</b-nav-item>
+                            <b-nav-item exact-active-class="active" to="/Stake">Stake</b-nav-item>
                         </b-navbar-nav>
                     </b-collapse>
                 </b-navbar>

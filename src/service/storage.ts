@@ -15,7 +15,7 @@ export class Storage {
 
         try {
             const decrypted = encryptpwd.decrypt(value, password);
-            const checksum = decrypted.toString().substr(0, 10);
+            const checksum = decrypted.toString().substr(0, 9);
             if (checksum === this.getChecksum(password)) {
                 return decrypted.substr(decrypted.indexOf(':') + 1)
             }

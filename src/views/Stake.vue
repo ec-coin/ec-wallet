@@ -26,24 +26,23 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import {mapState} from "vuex";
 import axios from "axios";
 
 @Component({
-    computed: {
-      ...mapState(['wallets'])
-    }
+
 })
 export default class Stake extends Vue {
   public amount = null;
   public currentStake = 100;
 
   created() {
-    axios.get(`http://localhost:4567/stake`)
-        .then(response => {
+    axios.get(`http://localhost:4567/stake`, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      }
+    }).then(response => {
           if (response.data.status == "SUCCESS") {
-            const data = response.data.data;
-            this.currentStake = data;
+            this.currentStake = response.data.data;
           }
         })
         .catch(e => {

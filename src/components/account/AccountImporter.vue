@@ -44,7 +44,6 @@
 </template>
 <script lang="ts">
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
-import * as bip39 from "bip39";
 import {Storage} from "@/service/storage";
 import {Wallet} from "@/service/wallet";
 import {mapActions} from "vuex";

@@ -1,6 +1,6 @@
 <template>
     <b-container>
-        <b-form>
+        <b-form @submit="sendTransaction">
             <b-form-group
                 id="input-group-1"
                 label="From"
@@ -15,7 +15,7 @@
                 label-for="input-1">
                 <b-form-input
                     id="input-1"
-                    v-model="password"
+                    v-model="to"
                     type="text"
                     placeholder="0xFFFFFFFF"
                     required
@@ -28,7 +28,7 @@
                 label-for="input-1">
                 <b-form-input
                     id="input-1"
-                    v-model="password"
+                    v-model="number"
                     type="number"
                     placeholder="10"
                     required
@@ -56,11 +56,8 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import AccountCreator from '@/components/account/AccountCreator.vue';
-import AccountImporter from "@/components/account/AccountImporter.vue";
-import AccountList from "@/components/account/AccountList.vue";
 import {mapState} from "vuex";
-import {Wallet} from "@/service/wallet"; // @ is an alias to /src
+import axios from "axios"; // @ is an alias to /src
 
 @Component({
     computed: {
@@ -71,6 +68,8 @@ export default class Send extends Vue {
     public selected = '';
     public options: any[] = [];
     public password = '';
+    public number = '';
+    public to = '';
 
     mounted() {
         (this as any).wallets.forEach(wallet => {
@@ -84,6 +83,18 @@ export default class Send extends Vue {
             } as any);
         })
     }
+
+  async sendTransaction() {
+    const res = await axios.post('http://localhost:4567/transactions', {}, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      }
+    });
+
+    let data = res.data;
+    console.log(data);
+  }
 }
 </script>
 
