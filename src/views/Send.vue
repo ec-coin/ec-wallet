@@ -85,7 +85,7 @@ export default class Send extends Vue {
     }
 
   async sendTransaction() {
-    const res = await axios.post('http://localhost:4567/transactions', {}, {
+    const res = await axios.post('http://localhost:4567/transactions', {"name": "test"}, {
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
