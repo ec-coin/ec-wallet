@@ -3,7 +3,7 @@
         <b-form>
             <b-form-group
                 id="input-group-1"
-                label="From"
+                label="To"
                 label-for="input-1"
                 description="">
                 <b-form-select v-model="selected" :options="options"></b-form-select>

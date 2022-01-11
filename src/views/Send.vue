@@ -1,5 +1,8 @@
 <template>
     <b-container>
+        <button class="btn btn-primary" v-if="!scan" @click="scan = true">Have QR Code?</button>
+        <qrcode-stream v-if="scan" @decode="onDecode"></qrcode-stream>
+
         <b-form>
             <b-form-group
                 id="input-group-1"
@@ -15,7 +18,7 @@
                 label-for="input-1">
                 <b-form-input
                     id="input-1"
-                    v-model="password"
+                    v-model="to"
                     type="text"
                     placeholder="0xFFFFFFFF"
                     required
@@ -28,7 +31,7 @@
                 label-for="input-1">
                 <b-form-input
                     id="input-1"
-                    v-model="password"
+                    v-model="amount"
                     type="number"
                     placeholder="10"
                     required
@@ -71,6 +74,9 @@ export default class Send extends Vue {
     public selected = '';
     public options: any[] = [];
     public password = '';
+    public to = '';
+    public amount = 0;
+    public scan = false;
 
     mounted() {
         (this as any).wallets.forEach(wallet => {
@@ -83,6 +89,12 @@ export default class Send extends Vue {
                 text: `${wallet.name} (${wallet.address})`
             } as any);
         })
+    }
+
+    onDecode (decodedString) {
+        const split = decodedString.split('::');
+        this.to = split[0];
+        this.amount = split[1];
     }
 }
 </script>
