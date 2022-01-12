@@ -7,6 +7,14 @@
 
       <b-form-group
           id="input-group-1"
+          label="From"
+          label-for="input-1"
+          description="">
+        <b-form-select v-model="selected" :options="options"></b-form-select>
+      </b-form-group>
+
+      <b-form-group
+          id="input-group-1"
           label="Stake Amount"
           label-for="input-1">
 
@@ -27,16 +35,34 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import axios from "axios";
+import {mapState} from "vuex";
 
 @Component({
-
+    computed: {
+      ...mapState(['wallets'])
+    }
 })
 export default class Stake extends Vue {
+  public selected = [];
   public amount = null;
   public currentStake = 100;
+  public options: any[] = [];
+
+  mounted() {
+    (this as any).wallets.forEach(wallet => {
+      if (this.selected.length == 0) {
+        this.selected = wallet.address;
+      }
+
+      this.options.push({
+        value: [wallet.address, wallet.publicKey],
+        text: `100 EC - ${wallet.name} (${wallet.address})`
+      } as any);
+    })
+  }
 
   created() {
-    axios.get(`http://localhost:4567/stake`, {
+    axios.get(`http://localhost:4567/balances?stake=` + '**addressTo**', {
       headers: {
         'Access-Control-Allow-Origin': '*',
       }
@@ -53,6 +79,7 @@ export default class Stake extends Vue {
   async stakeAmount(e: any) {
     e.preventDefault();
     console.log("amount: " + this.amount);
+    console.log("selected: " + this.selected);
   }
 
   async stake(amount: number) {

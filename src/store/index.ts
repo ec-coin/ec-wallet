@@ -10,7 +10,8 @@ export default new Vuex.Store({
         isWalletUnlocked: false,
         hasAWallet: false,
         incorrectPassword: false,
-        wallets: []
+        wallets: [],
+        publicKey: '',
     },
     mutations: {
         unlockWallet(state, wallets) {
@@ -31,7 +32,8 @@ export default new Vuex.Store({
             (state as any).wallets.push({
                 name,
                 seedphrase,
-                address: Wallet.getAddress(seedphrase)
+                address: Wallet.getAddress(seedphrase),
+                publicKey: Wallet.mnemonicToPublicKey(seedphrase)
             })
         }
     },
