@@ -11,18 +11,32 @@ export class Wallet {
         return bip39.generateMnemonic(256);
     }
 
-    static mnemonicToPrivateKey(mnemoic: string): Buffer {
-        const entropy = bip39.mnemonicToSeedSync(mnemoic);
+    static getAddress(mnemonic: string): string {
+        const publicKey = this.mnemonicToPublicKey(mnemonic);
+        const sha256Hasher = crypto.createHash("sha256");
+        const publicKeyHash = sha256Hasher.update(publicKey).digest();
+        return base_58.encode(publicKeyHash);
+    }
+
+    static mnemonicToPublicKey(mnemonic: string): any {
+        const privateKey = this.mnemonicToPrivateKey(mnemonic);
+        const key = ec.keyFromPrivate(privateKey);
+        const pubkey = key.getPublic().encode('hex', false);
+        return pubkey;
+    }
+
+    static mnemonicToPrivateKey(mnemonic: string): Buffer {
+        const entropy = bip39.mnemonicToSeedSync(mnemonic);
         const sha256Hasher = crypto.createHash("sha256");
         return sha256Hasher.update(entropy).digest();
     }
 
-    static getAddress(mnemoic: string): string {
-        const privateKey = this.mnemonicToPrivateKey(mnemoic);
-        const key = ec.keyFromPrivate(privateKey);
-        const publicKey = key.getPublic().encode('hex', false);
-        const sha256Hasher = crypto.createHash("sha256");
-        const publicKeyHash = sha256Hasher.update(publicKey).digest();
-        return base_58.encode(publicKeyHash);
+    static sign(publicKey: string, mnemonic: string, payload: string) {
+        const key = ec.keyFromPrivate(this.mnemonicToPrivateKey(mnemonic));
+        const encoder = new TextEncoder();
+        const msgBuffer = encoder.encode(payload);
+        const hashedMsgBuffer = crypto.createHash("sha256").update(msgBuffer).digest();
+        const signature = key.sign(hashedMsgBuffer);
+        return signature.toDER('hex');
     }
 }

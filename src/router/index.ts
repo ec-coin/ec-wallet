@@ -4,6 +4,7 @@ import Accounts from '../views/Accounts.vue'
 import Send from "@/views/Send.vue";
 import Receive from "@/views/Receive.vue";
 import Stake from "@/views/Stake.vue";
+import NetworkTX from "@/views/NetworkTx.vue";
 
 Vue.use(VueRouter)
 
@@ -30,6 +31,12 @@ const routes: Array<RouteConfig> = [
     path: '/stake',
     name: 'Stake',
     component: Stake
+  },
+
+  {
+    path: '/networktx',
+    name: 'NetworkTransactions',
+    component: NetworkTX
   }
 ]
 
