@@ -2,6 +2,7 @@ import * as bip39 from "bip39";
 import {ec as EC} from "elliptic";
 import crypto from "crypto";
 import base_58 from "base-58";
+import BN from "bn.js";
 
 
 const ec = new EC('secp256k1');
@@ -12,9 +13,11 @@ export class Wallet {
     }
 
     static getAddress(mnemonic: string): string {
-        const publicKey = this.mnemonicToPublicKey(mnemonic);
+        const publicKey = new BN(this.mnemonicToPublicKey(mnemonic), 'hex');
         const sha256Hasher = crypto.createHash("sha256");
-        const publicKeyHash = sha256Hasher.update(publicKey).digest();
+        const publicKeyHash = sha256Hasher.update(publicKey.toArrayLike(Buffer)).digest();
+        console.log("hash: ");
+        console.log(Buffer.from(publicKeyHash).toString('hex'));
         return base_58.encode(publicKeyHash);
     }
 

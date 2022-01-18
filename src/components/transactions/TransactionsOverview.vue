@@ -14,7 +14,7 @@
         aria-controls="my-table"
         limit="7"
         align="fill"
-        @page-click="getTransactions()"
+        @page-click="created()"
         first-number
         last-number
     ></b-pagination>
@@ -34,7 +34,6 @@ export default class TransactionsOverview extends Vue {
   public rows = 0;
   public perPage = 10;
   public transactions = [];
-  public props: ['url']
 
   created() {
     this.getTransactions(`http://localhost:4567/transactions`);
