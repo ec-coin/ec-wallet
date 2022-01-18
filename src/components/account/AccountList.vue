@@ -48,7 +48,7 @@ export default class AccountList extends Vue {
   public items = [];
   public currentPage = 1;
   public rows = 0;
-  public perPage = 5;
+  public perPage = 10;
 
   created() {
     this.extractWalletNames();
@@ -61,7 +61,7 @@ export default class AccountList extends Vue {
   }
 
   public getTransactions(address : string) {
-    axios.get(`http://localhost:4567/transactions?from=` + 'b38c7c466def522397c5096e61dce85bba90b681197dfea6eff08002e3811505')
+    axios.get(`http://localhost:4567/transactions?from=` + 'HDmaqtRRTeyEVLhEdKNurmPTB2Rb67YwPVUVMVXa2y88')
         .then(response => {
           if (response.data.status == "SUCCESS") {
             const data = response.data.data;

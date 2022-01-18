@@ -91,10 +91,7 @@ export default class Send extends Vue {
 
   async sendTransaction() {
       const timestamp = new Date().getTime();
-
-      const encoder = new TextEncoder();
-      const msgBuffer = encoder.encode(this.selected[0] + this.to + timestamp + this.amount);
-      const res = await axios.post('http://localhost:4567/transactions',
+      await axios.post('http://localhost:4567/transactions',
           {
             "from": this.selected[0],
             "to": this.to,
@@ -109,9 +106,9 @@ export default class Send extends Vue {
               'Access-Control-Allow-Origin': '*'
             }
           }
-      );
-      let data = res.data;
-      console.log(data);
+      ).catch(error => {
+        console.log(error.message);
+      });
   }
 }
 </script>

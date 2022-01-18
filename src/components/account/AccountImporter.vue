@@ -62,10 +62,6 @@ export default class AccountImporter extends Vue {
 
     public isPasswordCorrect = false;
 
-    mounted() {
-        console.log(Wallet.generateMnemonic());
-    }
-
     async submit(e: any) {
         e.preventDefault();
         await this.createWallet({ name: this.name, seedphrase: this.seedphrase, password: this.password });
