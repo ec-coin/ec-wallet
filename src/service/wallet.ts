@@ -13,11 +13,11 @@ export class Wallet {
     }
 
     static getAddress(mnemonic: string): string {
-        const publicKey = new BN(this.mnemonicToPublicKey(mnemonic), 'hex');
+        const key = this.mnemonicToPublicKey(mnemonic)
+        const toHash = key.getPublic().getX().toString('hex') + key.getPublic().getY().toString('hex')
         const sha256Hasher = crypto.createHash("sha256");
-        const publicKeyHash = sha256Hasher.update(publicKey.toArrayLike(Buffer)).digest();
-        console.log("hash: ");
-        console.log(Buffer.from(publicKeyHash).toString('hex'));
+        const publicKeyHash = sha256Hasher.update(toHash).digest();
+       
         return base_58.encode(publicKeyHash);
     }
 
