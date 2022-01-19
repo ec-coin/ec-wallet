@@ -48,6 +48,7 @@ export default class AccountList extends Vue {
   public currentPage = 1;
   public perPage = 10;
 
+
   mounted() {
     this.extractWalletNames();
   }
@@ -72,6 +73,7 @@ export default class AccountList extends Vue {
           //console.log(e);
         });
   }
+
 
   public getBalance(address: string, walletName: string) {
     axios.get(`http://seed001.ec.dylaan.nl:4567/balances?balance=` + address)
