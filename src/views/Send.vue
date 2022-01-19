@@ -94,7 +94,7 @@ export default class Send extends Vue {
           {
             "from": this.selected[0],
             "to": this.to,
-            "amount": this.amount,
+            "amount": parseFloat(this.amount as any),
             "public_key": this.selected[1],
             "signature": Wallet.sign(this.seedPhrases.get(this.selected[0]), this.selected[0] + this.to + timestamp + this.amount),
             "timestamp": timestamp
