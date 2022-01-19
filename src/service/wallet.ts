@@ -13,9 +13,12 @@ export class Wallet {
     }
 
     static getAddress(mnemonic: string): string {
-        const publicKey = new BN(this.mnemonicToPublicKey(mnemonic), 'hex');
+        const privateKey = this.mnemonicToPrivateKey(mnemonic);
+        const key = ec.keyFromPrivate(privateKey);
+        const toHash = key.getPublic().getX().toString('hex') + key.getPublic().getY().toString('hex')
         const sha256Hasher = crypto.createHash("sha256");
-        const publicKeyHash = sha256Hasher.update(publicKey.toArrayLike(Buffer)).digest();
+        const publicKeyHash = sha256Hasher.update(toHash).digest();
+
         return base_58.encode(publicKeyHash);
     }
 
