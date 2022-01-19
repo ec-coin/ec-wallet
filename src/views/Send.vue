@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import {Component, Vue} from 'vue-property-decorator';
 import {mapState} from "vuex";
 import axios from "axios";
 import {Wallet} from "@/service/wallet";
@@ -66,20 +66,17 @@ import {Wallet} from "@/service/wallet";
     }
 })
 export default class Send extends Vue {
-    private seedPhrases = new Map<string, string>();
     public selected: string[] = [];
     public options: any[] = [];
-    public publicKey = '';
     public password = '';
     public amount = 0;
     public to = '';
+    public wallets;
 
     mounted() {
         (this as any).wallets.forEach(wallet => {
             if (this.selected.length == 0) {
                 this.selected = wallet.address;
-                this.publicKey = wallet.publicKey;
-                this.seedPhrases.set(wallet.address, wallet.seedphrase)
             }
 
             this.options.push({
@@ -89,27 +86,30 @@ export default class Send extends Vue {
         })
     }
 
-  async sendTransaction() {
-      const timestamp = new Date().getTime();
-      await axios.post('http://localhost:4567/transactions',
-          {
-            "from": this.selected[0],
-            "to": this.to,
-            "amount": this.amount,
-            "public_key": this.selected[1],
-            "signature": Wallet.sign(this.selected[1], this.seedPhrases.get(this.selected[0]), this.selected[0] + this.to + timestamp + this.amount),
-            "timestamp": timestamp
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*'
+    async sendTransaction(e) {
+        e.preventDefault();
+        const wallet = this.wallets.find(w => w.address == this.selected[0]);
+
+        const timestamp = new Date().getTime();
+        await axios.post('http://localhost:4567/transactions',
+            {
+                "from": wallet.address,
+                "to": this.to,
+                "amount": this.amount,
+                "public_key": wallet.publicKey,
+                "signature": Wallet.sign(wallet.publicKey, wallet.seedphrase, wallet.address + this.to + timestamp + this.amount),
+                "timestamp": timestamp
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                }
             }
-          }
-      ).catch(error => {
-        console.log(error.message);
-      });
-  }
+        ).catch(error => {
+            console.log(error.message);
+        });
+    }
 }
 </script>
 
