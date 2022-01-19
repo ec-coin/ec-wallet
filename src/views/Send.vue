@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import {Component, Vue} from 'vue-property-decorator';
 import {mapState} from "vuex";
 import axios from "axios";
 import {Wallet} from "@/service/wallet";
@@ -66,19 +66,18 @@ import {Wallet} from "@/service/wallet";
     }
 })
 export default class Send extends Vue {
-    private seedPhrases = new Map<string, string>();
     public selected: string[] = [];
     public options: any[] = [];
-    public publicKey = '';
     public password = '';
     public amount = 0;
     public to = '';
+    public wallets;
 
     mounted() {
         (this as any).wallets.forEach(wallet => {
-            this.selected = wallet.address;
-            this.publicKey = wallet.publicKey;
-            this.seedPhrases.set(wallet.address, wallet.seedphrase);
+            if (this.selected.length == 0) {
+                this.selected = wallet.address;
+            }
 
             this.options.push({
                 value: [wallet.address, wallet.publicKey],
@@ -87,30 +86,32 @@ export default class Send extends Vue {
         })
     }
 
-  async sendTransaction(e) {
-      e.preventDefault();
-      const timestamp = new Date().getTime();
-      await axios.post('http://seed001.ec.dylaan.nl:4567/transactions',
-          {
-            "from": this.selected[0],
-            "to": this.to,
-            "amount": parseFloat(this.amount as any),
-            "public_key": this.selected[1],
-            "signature": Wallet.sign(this.seedPhrases.get(this.selected[0]), this.selected[0] + this.to + timestamp + this.amount),
-            "timestamp": timestamp
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*'
-            }
-          }
-      ).catch(error => {
-        console.log(error.message);
-      });
+    async sendTransaction(e) {
+        e.preventDefault();
+        const wallet = this.wallets.find(w => w.address == this.selected[0]);
 
-      console.log("TX has been sent");
-  }
+        const timestamp = new Date().getTime();
+        await axios.post('http://seed001.ec.dylaan.nl:4567/transactions',
+            {
+                "from": wallet.address,
+                "to": this.to,
+                "amount": parseFloat(this.amount as any),
+                "public_key": wallet.publicKey,
+                "signature": Wallet.sign(wallet.seedphrase,  wallet.address + this.to + timestamp + this.amount),
+                "timestamp": timestamp
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                }
+            }
+        ).catch(error => {
+            console.log(error.message);
+        });
+
+        console.log("TX has been sent");
+    }
 }
 </script>
 
