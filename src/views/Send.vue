@@ -92,13 +92,15 @@ export default class Send extends Vue {
         const wallet = this.wallets.find(w => w.address == this.selected[0]);
 
         const timestamp = new Date().getTime();
-        await axios.post('`${BASE_URL}/transactions',
+        console.log(wallet.address + this.to + timestamp + Number(this.amount).toFixed(1));
+        await axios.post(`${BASE_URL}/transactions`,
             {
                 "from": wallet.address,
                 "to": this.to,
                 "amount": parseFloat(this.amount as any),
                 "public_key": wallet.publicKey,
-                "signature": Wallet.sign(wallet.seedphrase,  wallet.address + this.to + timestamp + this.amount),
+                "address_type": 'wallet', // wallet.addressType,
+                "signature": Wallet.sign(wallet.seedphrase,  wallet.address + this.to + timestamp + Number(this.amount).toFixed(1)),
                 "timestamp": timestamp
             },
             {
