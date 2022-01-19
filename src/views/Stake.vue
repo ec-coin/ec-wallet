@@ -63,7 +63,7 @@ export default class Stake extends Vue {
   }
 
   created() {
-    axios.get(`http://localhost:4567/balances?stake=` + '**addressTo**', {
+    axios.get(`http://seed001.ec.dylaan.nl:4567/balances?stake=` + '**addressTo**', {
       headers: {
         'Access-Control-Allow-Origin': '*',
       }
@@ -85,7 +85,7 @@ export default class Stake extends Vue {
 
   async stake(amount: number) {
     const timestamp = new Date().getTime();
-    const res = await axios.post('http://localhost:4567/stake',
+    const res = await axios.post('http://seed001.ec.dylaan.nl:4567/stake',
         {
           "from": this.selected[0],
           "amount": this.amount,
