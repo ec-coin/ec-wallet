@@ -15,9 +15,9 @@ export class Storage {
 
         try {
             const decrypted = encryptpwd.decrypt(value, password);
-            const checksum = decrypted.toString().substr(0, 9);
+            const checksum = decrypted.toString().substr(0, decrypted.indexOf(':'));
 
-            if (checksum === this.getChecksum(password, checksum.length)) {
+            if (checksum === this.getChecksum(password)) {
                 return decrypted.substr(decrypted.indexOf(':') + 1)
             }
 
@@ -28,13 +28,12 @@ export class Storage {
         return null;
     }
 
-
     static isPasswordCorrect(key: string, password: string): boolean {
         return this.getEncrypted(key, password) !== null;
     }
 
-    private static getChecksum(password: string, length = 10) {
+    private static getChecksum(password: string) {
         const sha256Hasher = crypto.createHash("sha256");
-        return sha256Hasher.update(password).digest().toString('utf-8', 0, length);
+        return sha256Hasher.update(password).digest().toString('utf-8', 0, 10);
     }
 }

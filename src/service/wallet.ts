@@ -16,8 +16,6 @@ export class Wallet {
         const publicKey = new BN(this.mnemonicToPublicKey(mnemonic), 'hex');
         const sha256Hasher = crypto.createHash("sha256");
         const publicKeyHash = sha256Hasher.update(publicKey.toArrayLike(Buffer)).digest();
-        console.log("hash: ");
-        console.log(Buffer.from(publicKeyHash).toString('hex'));
         return base_58.encode(publicKeyHash);
     }
 

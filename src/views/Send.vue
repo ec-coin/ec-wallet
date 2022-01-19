@@ -59,7 +59,6 @@ import { Component, Vue } from 'vue-property-decorator';
 import {mapState} from "vuex";
 import axios from "axios";
 import {Wallet} from "@/service/wallet";
-import crypto from "crypto"; // @ is an alias to /src
 
 @Component({
     computed: {
@@ -81,13 +80,6 @@ export default class Send extends Vue {
                 this.selected = wallet.address;
                 this.publicKey = wallet.publicKey;
                 this.seedPhrases.set(wallet.address, wallet.seedphrase)
-                console.log(wallet.seedphrase);
-                console.log(wallet.address);
-                console.log(wallet.publicKey);
-                const sha256Hasher = crypto.createHash("sha256");
-                const publicKeyHash = sha256Hasher.update(wallet.publicKey).digest();
-                console.log(...publicKeyHash)
-                console.log(Wallet.getAddress(wallet.seedPhrase));
             }
 
             this.options.push({

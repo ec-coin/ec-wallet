@@ -3,7 +3,7 @@
         <template v-if="hasAWallet && isWalletUnlocked">
             <b-container>
                 <b-navbar toggleable="lg" type="dark" variant="primary">
-                    <b-navbar-brand href="#">EC Wallet</b-navbar-brand>
+                    <b-navbar-brand href="#">EC Wallet - {{ username }}</b-navbar-brand>
 
                     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
@@ -37,6 +37,7 @@ import {Component, Vue} from 'vue-property-decorator';
 import SetupWallet from "@/components/init/SetupWallet.vue";
 import {mapActions, mapState} from "vuex";
 import UnlockWallet from "@/components/init/UnlockWallet.vue";
+import AppStorage from "@randlabs/encrypted-local-storage";
 
 @Component({
     components: {SetupWallet, UnlockWallet},
@@ -48,6 +49,11 @@ import UnlockWallet from "@/components/init/UnlockWallet.vue";
     }
 })
 export default class App extends Vue {
+    public username = '';
+
+    async created() {
+      this.username = await AppStorage.getItem("username");
+    }
 
     initWallet!: () => Promise<void>;
 

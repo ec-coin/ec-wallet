@@ -10,9 +10,9 @@
         <b-card-body>
           <h4>Transactions</h4>
           <b-table responsive striped hover
-              :items="items"
-              :per-page="perPage"
-              :current-page="currentPage"
+                   :items="items"
+                   :per-page="perPage"
+                   :current-page="currentPage"
           ></b-table>
 
           <b-pagination
@@ -36,7 +36,6 @@
 import { Component, Vue } from 'vue-property-decorator';
 import {mapState} from "vuex";
 import axios from "axios";
-
 @Component({
   computed: {
     ...mapState(['wallets'])
@@ -56,7 +55,6 @@ export default class AccountList extends Vue {
   }
 
   public getItems(address: string, walletName: string) {
-    this.getTransactions(address);
     this.getBalance(walletName);
   }
 
@@ -66,7 +64,6 @@ export default class AccountList extends Vue {
           if (response.data.status == "SUCCESS") {
             const data = response.data.data;
             this.items = [];
-
             data.forEach(obj => {
               this.items.push({from: obj.from, to: obj.to, amount: obj.amount, timestamp: obj.timestamp.iMillis});
             });
@@ -74,7 +71,7 @@ export default class AccountList extends Vue {
           }
         })
         .catch(e => {
-          console.log(e);
+          //console.log(e);
         });
   }
 
@@ -101,5 +98,4 @@ export default class AccountList extends Vue {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-
 </style>

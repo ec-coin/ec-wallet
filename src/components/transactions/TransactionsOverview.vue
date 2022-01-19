@@ -1,6 +1,6 @@
 <template>
   <b-card-body>
-    <h4>Network Transactions</h4>
+    <h4>{{ title }}</h4>
     <b-table responsive striped hover
              :items="transactions"
              :per-page="perPage"
@@ -14,7 +14,7 @@
         aria-controls="my-table"
         limit="7"
         align="fill"
-        @page-click="created()"
+        @page-click="getTransactions()"
         first-number
         last-number
     ></b-pagination>
@@ -23,8 +23,9 @@
 
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import axios from "axios";
+import {BASE_URL} from "@/main";
 
 @Component({
 
@@ -34,25 +35,26 @@ export default class TransactionsOverview extends Vue {
   public rows = 0;
   public perPage = 10;
   public transactions = [];
+  @Prop()
+  public title;
+  @Prop()
+  public path;
+  @Prop()
+  public filter;
 
   created() {
-    this.getTransactions(`http://localhost:4567/transactions`);
+    this.getTransactions();
   }
 
-  public getTransactions(url: string) {
-    axios.get(url)
+  public getTransactions() {
+    axios.get(`${BASE_URL}${this.path}`)
         .then(response => {
           console.log(response.data.status)
           if (response.data.status == "SUCCESS") {
             const data = response.data.data;
             this.transactions = [];
-            //this.pendingTransactions = [];
-
-            data.forEach(obj => {
+            data.filter(this.filter).forEach(obj => {
               this.transactions.push({from: obj.from, to: obj.to, amount: obj.amount, timestamp: obj.timestamp.iMillis, status: obj.status});
-              if (obj.status == "pending") {
-                //this.pendingTransactions.push({from: obj.from, to: obj.to, amount: obj.amount, timestamp: obj.timestamp.iMillis})
-              }
             });
             this.rows = this.transactions.length;
           }
