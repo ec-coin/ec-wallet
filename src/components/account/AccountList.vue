@@ -3,7 +3,7 @@
     <b-card no-body class="mb-1" v-for="wallet in wallets" :key="wallet.seedphrase">
       <b-card-header header-tag="header" class="p-1" role="tab">
         <b-button block v-b-toggle="'accordion' + wallet.address" variant="primary" v-on:click="getItems(wallet.address, wallet.name)">
-          {{ wallet.name + ": " + (balances[wallet.name]) + "  EC"}}
+          {{ wallet.name + ": " + (balances[wallet.name]) + "  EC " + "rowss " }}
         </b-button>
       </b-card-header>
       <b-collapse :id="'accordion' + wallet.address" accordion="my-accordion" role="tabpanel">
@@ -15,9 +15,9 @@
                    :current-page="currentPage"
           ></b-table>
 
-          <!-- <b-pagination
+          <b-pagination
               v-model="currentPage"
-              :total-rows="transactions[wallet.name].length"
+              :total-rows="rows[wallet.name]"
               :per-page="perPage"
               aria-controls="my-table"
               limit="7"
@@ -25,7 +25,7 @@
               @page-click="getItems(wallet.address, wallet.name)"
               first-number
               last-number
-          ></b-pagination> -->
+          ></b-pagination>
         </b-card-body>
       </b-collapse>
     </b-card>
@@ -36,6 +36,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import {mapState} from "vuex";
 import axios from "axios";
+import {BASE_URL} from "@/main";
 @Component({
   computed: {
     ...mapState(['wallets'])
@@ -47,6 +48,11 @@ export default class AccountList extends Vue {
   public wallets !: [];
   public currentPage = 1;
   public perPage = 10;
+  public rows = [];
+
+  created() {
+    this.extractWalletNames();
+  }
 
   mounted() {
     this.extractWalletNames();
@@ -58,7 +64,7 @@ export default class AccountList extends Vue {
   }
 
   public getTransactions(address : string, walletName: string) {
-    axios.get(`http://seed001.ec.dylaan.nl:4567/transactions?from=` + address)
+    axios.get(`${BASE_URL}/transactions?from=` + address)
         .then(response => {
           if (response.data.status == "SUCCESS") {
             const data = response.data.data;
@@ -66,15 +72,18 @@ export default class AccountList extends Vue {
             data.forEach(obj => {
               this.transactions[walletName].push({from: obj.from, to: obj.to, amount: obj.amount, timestamp: obj.timestamp.iMillis});
             });
+            console.log(data)
+            console.log(address)
+            this.rows[walletName] = this.transactions[walletName].length;
           }
         })
         .catch(e => {
-          //console.log(e);
+          console.log(e);
         });
   }
 
   public getBalance(address: string, walletName: string) {
-    axios.get(`http://seed001.ec.dylaan.nl:4567/balances?balance=` + address)
+    axios.get(`${BASE_URL}/balances?balance=` + address)
         .then(response => {
           if (response.data.status == "SUCCESS") {
             this.balances[walletName] = response.data.data;

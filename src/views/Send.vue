@@ -59,6 +59,7 @@ import {Component, Vue} from 'vue-property-decorator';
 import {mapState} from "vuex";
 import axios from "axios";
 import {Wallet} from "@/service/wallet";
+import {BASE_URL} from "@/main";
 
 @Component({
     computed: {
@@ -91,7 +92,7 @@ export default class Send extends Vue {
         const wallet = this.wallets.find(w => w.address == this.selected[0]);
 
         const timestamp = new Date().getTime();
-        await axios.post('http://seed001.ec.dylaan.nl:4567/transactions',
+        await axios.post('`${BASE_URL}/transactions',
             {
                 "from": wallet.address,
                 "to": this.to,

@@ -37,6 +37,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import axios from "axios";
 import {mapState} from "vuex";
 import {Wallet} from "@/service/wallet";
+import {BASE_URL} from "@/main";
 
 @Component({
     computed: {
@@ -63,7 +64,7 @@ export default class Stake extends Vue {
   }
 
   created() {
-    axios.get(`http://seed001.ec.dylaan.nl:4567/balances?stake=` + '**addressTo**', {
+    axios.get(`${BASE_URL}/balances?stake=` + '**addressTo**', {
       headers: {
         'Access-Control-Allow-Origin': '*',
       }
@@ -85,7 +86,7 @@ export default class Stake extends Vue {
 
   async stake(amount: number) {
     const timestamp = new Date().getTime();
-    const res = await axios.post('http://seed001.ec.dylaan.nl:4567/stake',
+    const res = await axios.post(`${BASE_URL}/stake`,
         {
           "from": this.selected[0],
           "amount": this.amount,
