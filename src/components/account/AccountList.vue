@@ -3,29 +3,29 @@
     <b-card no-body class="mb-1" v-for="wallet in wallets" :key="wallet.seedphrase">
       <b-card-header header-tag="header" class="p-1" role="tab">
         <b-button block v-b-toggle="'accordion' + wallet.address" variant="primary" v-on:click="getItems(wallet.address, wallet.name)">
-          {{ wallet.name + ": " + (balances[wallet.name] / 100 - 1.23) + " EC"}}
+          {{ wallet.name + ": " + (balances[wallet.name]) + "  EC"}}
         </b-button>
       </b-card-header>
       <b-collapse :id="'accordion' + wallet.address" accordion="my-accordion" role="tabpanel">
         <b-card-body>
           <h4>Transactions</h4>
           <b-table responsive striped hover
-                   :items="items"
+                   :items="transactions[wallet.name]"
                    :per-page="perPage"
                    :current-page="currentPage"
           ></b-table>
 
-          <b-pagination
+          <!-- <b-pagination
               v-model="currentPage"
-              :total-rows="rows"
+              :total-rows="transactions[wallet.name].length"
               :per-page="perPage"
               aria-controls="my-table"
               limit="7"
               align="fill"
-              @page-click="getItems(wallet.address)"
+              @page-click="getItems(wallet.address, wallet.name)"
               first-number
               last-number
-          ></b-pagination>
+          ></b-pagination> -->
         </b-card-body>
       </b-collapse>
     </b-card>
@@ -43,31 +43,29 @@ import axios from "axios";
 })
 export default class AccountList extends Vue {
   public balances = [];
+  public transactions = [];
   public wallets !: [];
-  public items = [];
   public currentPage = 1;
-  public rows = 0;
   public perPage = 10;
 
-  created() {
+  mounted() {
     this.extractWalletNames();
-    this.getTransactions("");
   }
 
   public getItems(address: string, walletName: string) {
-    this.getBalance(walletName);
+    this.getBalance(address, walletName);
+    this.getTransactions(address, walletName);
   }
 
-  public getTransactions(address : string) {
-    axios.get(`http://localhost:4567/transactions?from=` + 'HDmaqtRRTeyEVLhEdKNurmPTB2Rb67YwPVUVMVXa2y88')
+  public getTransactions(address : string, walletName: string) {
+    axios.get(`http://seed001.ec.dylaan.nl:4567/transactions?from=` + address)
         .then(response => {
           if (response.data.status == "SUCCESS") {
             const data = response.data.data;
-            this.items = [];
+            this.transactions[walletName] = [];
             data.forEach(obj => {
-              this.items.push({from: obj.from, to: obj.to, amount: obj.amount, timestamp: obj.timestamp.iMillis});
+              this.transactions[walletName].push({from: obj.from, to: obj.to, amount: obj.amount, timestamp: obj.timestamp.iMillis});
             });
-            this.rows = this.items.length;
           }
         })
         .catch(e => {
@@ -75,8 +73,8 @@ export default class AccountList extends Vue {
         });
   }
 
-  public getBalance(walletName: string) {
-    axios.get(`http://localhost:4567/balances?balance=` + '**addressTo**')
+  public getBalance(address: string, walletName: string) {
+    axios.get(`http://seed001.ec.dylaan.nl:4567/balances?balance=` + address)
         .then(response => {
           if (response.data.status == "SUCCESS") {
             this.balances[walletName] = response.data.data;
@@ -91,7 +89,8 @@ export default class AccountList extends Vue {
     const length = this.wallets.length;
     for (let i = 0; i < length; i++) {
       this.balances[this.wallets[i]['name']] = 0.0;
-      this.getBalance(this.wallets[i]['name']);
+      this.getBalance(this.wallets[i]['address'], this.wallets[i]['name']);
+      this.getTransactions(this.wallets[i]['address'], this.wallets[i]['name']);
     }
   }
 }

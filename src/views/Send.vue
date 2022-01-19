@@ -76,11 +76,9 @@ export default class Send extends Vue {
 
     mounted() {
         (this as any).wallets.forEach(wallet => {
-            if (this.selected.length == 0) {
-                this.selected = wallet.address;
-                this.publicKey = wallet.publicKey;
-                this.seedPhrases.set(wallet.address, wallet.seedphrase)
-            }
+            this.selected = wallet.address;
+            this.publicKey = wallet.publicKey;
+            this.seedPhrases.set(wallet.address, wallet.seedphrase);
 
             this.options.push({
                 value: [wallet.address, wallet.publicKey],
@@ -89,15 +87,16 @@ export default class Send extends Vue {
         })
     }
 
-  async sendTransaction() {
+  async sendTransaction(e) {
+      e.preventDefault();
       const timestamp = new Date().getTime();
-      await axios.post('http://localhost:4567/transactions',
+      await axios.post('http://seed001.ec.dylaan.nl:4567/transactions',
           {
             "from": this.selected[0],
             "to": this.to,
             "amount": this.amount,
             "public_key": this.selected[1],
-            "signature": Wallet.sign(this.selected[1], this.seedPhrases.get(this.selected[0]), this.selected[0] + this.to + timestamp + this.amount),
+            "signature": Wallet.sign(this.seedPhrases.get(this.selected[0]), this.selected[0] + this.to + timestamp + this.amount),
             "timestamp": timestamp
           },
           {
@@ -109,6 +108,8 @@ export default class Send extends Vue {
       ).catch(error => {
         console.log(error.message);
       });
+
+      console.log("TX has been sent");
   }
 }
 </script>
