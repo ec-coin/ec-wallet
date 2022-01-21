@@ -74,7 +74,7 @@ export default class AccountImporter extends Vue {
 
     async submit(e: any) {
         e.preventDefault();
-        await this.createWallet({ name: this.name, seedphrase: this.seedphrase, password: this.password, stakeAccount: this.stakeAccount });
+        await this.createWallet({ name: this.name, seedphrase: this.seedphrase, password: this.password, stakeaccount: this.stakeAccount });
         this.name = '';
         this.seedphrase = '';
         this.password = '';

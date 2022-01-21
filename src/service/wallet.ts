@@ -36,7 +36,6 @@ export class Wallet {
     }
 
     static sign(mnemonic: string, payload: string) {
-        console.log(mnemonic);
         const key = ec.keyFromPrivate(this.mnemonicToPrivateKey(mnemonic));    
         const encoder = new TextEncoder();
         const msgBuffer = encoder.encode(payload);

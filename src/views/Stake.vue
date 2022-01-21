@@ -1,16 +1,21 @@
 <template>
   <b-container>
+    <span>Current stake: {{ currentStake }}</span>
     <b-form @submit="stakeAmount">
-      <b-row>
-        <span>Current stake: {{ currentStake }}</span>
-      </b-row>
-
       <b-form-group
           id="input-group-1"
           label="From"
           label-for="input-1"
           description="">
-        <b-form-select v-model="selected" :options="options"></b-form-select>
+        <b-form-select v-model="selectedFrom" :options="walletaccounts"></b-form-select>
+      </b-form-group>
+
+      <b-form-group
+          id="input-group-1"
+          label="To"
+          label-for="input-1"
+          description="">
+        <b-form-select v-model="selectedTo" :options="stakeaccounts"></b-form-select>
       </b-form-group>
 
       <b-form-group
@@ -45,21 +50,27 @@ import {BASE_URL} from "@/main";
     }
 })
 export default class Stake extends Vue {
-  public selected = [];
+  public selectedFrom = [];
+  public selectedTo = [];
   public amount = null;
   public currentStake = 100;
-  public options: any[] = [];
+  public walletaccounts: any[] = [];
+  public stakeaccounts: any[] = [];
 
   mounted() {
     (this as any).wallets.forEach(wallet => {
-      if (this.selected.length == 0) {
-        this.selected = wallet.address;
+      if (wallet.stakeaccount === 'true') {
+        this.stakeaccounts.push({
+          value: [wallet.address, wallet.publicKey],
+          text: `100 EC - ${wallet.name} (${wallet.address})`
+        })
       }
-
-      this.options.push({
-        value: [wallet.address, wallet.publicKey],
-        text: `100 EC - ${wallet.name} (${wallet.address})`
-      } as any);
+      else {
+        this.walletaccounts.push({
+          value: [wallet.address, wallet.publicKey],
+          text: `100 EC - ${wallet.name} (${wallet.address})`
+        } as any);
+      }
     })
   }
 
@@ -70,7 +81,7 @@ export default class Stake extends Vue {
       }
     }).then(response => {
           if (response.data.status == "SUCCESS") {
-            this.currentStake = response.data.data;
+            //this.currentStake = response.data.data;
           }
         })
         .catch(e => {
@@ -80,16 +91,19 @@ export default class Stake extends Vue {
 
   async stakeAmount(e: any) {
     e.preventDefault();
-    console.log("amount: " + this.amount);
-    console.log("selected: " + this.selected);
   }
 
   async stake(amount: number) {
     const timestamp = new Date().getTime();
+    const wallet = this.walletaccounts.find(w => w.address == this.selectedFrom[0]);
+
     const res = await axios.post(`${BASE_URL}/stake`,
         {
-          "from": this.selected[0],
+          "from": wallet.address,
+          "to": this.selectedTo[0],
           "amount": this.amount,
+          "public_key": wallet.publicKey,
+          "signature": Wallet.sign(wallet.seedphrase,  wallet.address + this.selectedTo[0] + timestamp + Number(this.amount).toFixed(1)),
           "timestamp": timestamp
         },
         {

@@ -49,7 +49,6 @@ export default class TransactionsOverview extends Vue {
   public getTransactions() {
     axios.get(`${BASE_URL}${this.path}`)
         .then(response => {
-          console.log(response.data.status)
           if (response.data.status == "SUCCESS") {
             const data = response.data.data;
             this.transactions = [];

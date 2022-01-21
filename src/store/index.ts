@@ -28,10 +28,11 @@ export default new Vuex.Store({
             state.hasAWallet = true;
         },
 
-        addWallet(state, { name, seedphrase }) {
+        addWallet(state, { name, seedphrase, stakeaccount }) {
             (state as any).wallets.push({
                 name,
                 seedphrase,
+                stakeaccount,
                 address: Wallet.getAddress(seedphrase),
                 publicKey: Wallet.mnemonicToPublicKey(seedphrase)
             })
@@ -47,8 +48,8 @@ export default new Vuex.Store({
             commit('hasAWallet');
         },
 
-        async createWallet({ commit, state }, { name, seedphrase, password }) {
-            commit('addWallet', { name, seedphrase });
+        async createWallet({ commit, state }, { name, seedphrase, password, stakeaccount }) {
+            commit('addWallet', { name, seedphrase, stakeaccount });
             const data = JSON.stringify(state.wallets);
             Storage.saveEncrypted('wallets', data, password);
             commit('hasAWallet');
