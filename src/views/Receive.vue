@@ -35,7 +35,7 @@ import {Component, Vue, Watch} from 'vue-property-decorator';
 import AccountCreator from '@/components/account/AccountCreator.vue';
 import AccountImporter from "@/components/account/AccountImporter.vue";
 import AccountList from "@/components/account/AccountList.vue";
-import {mapState} from "vuex";
+import {mapGetters, mapState} from "vuex";
 import {Wallet} from "@/service/wallet"; // @ is an alias to /src
 import VueQrCode from 'vue-weblineindia-qrcode'
 
@@ -45,7 +45,7 @@ import VueQrCode from 'vue-weblineindia-qrcode'
         VueQrCode
     },
     computed: {
-        ...mapState(['wallets'])
+        ...mapGetters(['wallets'])
     }
 })
 export default class Receive extends Vue {

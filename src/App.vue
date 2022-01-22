@@ -42,12 +42,18 @@ import UnlockWallet from "@/components/init/UnlockWallet.vue";
         ...mapState(['hasAWallet', 'isWalletUnlocked'])
     },
     methods: {
-        ...mapActions(['initWallet'])
+        ...mapActions(['initWallet', 'sync'])
     }
 })
 export default class App extends Vue {
 
     initWallet!: () => Promise<void>;
+    sync !: () => Promise<void>;
+
+    async created() {
+        await this.sync();
+        setInterval(async () => this.sync(), 5000);
+    }
 
     async mounted(): Promise<void> {
         await this.initWallet();

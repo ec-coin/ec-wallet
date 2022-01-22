@@ -62,12 +62,12 @@ import { Component, Vue } from 'vue-property-decorator';
 import AccountCreator from '@/components/account/AccountCreator.vue';
 import AccountImporter from "@/components/account/AccountImporter.vue";
 import AccountList from "@/components/account/AccountList.vue";
-import {mapState} from "vuex";
+import {mapGetters, mapState} from "vuex";
 import {Wallet} from "@/service/wallet"; // @ is an alias to /src
 
 @Component({
     computed: {
-        ...mapState(['wallets'])
+        ...mapGetters(['wallets'])
     }
 })
 export default class Send extends Vue {
