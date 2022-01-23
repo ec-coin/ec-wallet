@@ -103,6 +103,7 @@ export default class Stake extends Vue {
           "to": this.selectedTo[0],
           "amount": this.amount,
           "public_key": wallet.publicKey,
+          "address_type": Wallet.determineAddressType(wallet),
           "signature": Wallet.sign(wallet.seedphrase,  wallet.address + this.selectedTo[0] + timestamp + Number(this.amount).toFixed(1)),
           "timestamp": timestamp
         },

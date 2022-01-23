@@ -98,7 +98,7 @@ export default class Send extends Vue {
                 "to": this.to,
                 "amount": parseFloat(this.amount as any),
                 "public_key": wallet.publicKey,
-                "address_type": this.determineAddressType(wallet), // wallet.addressType,
+                "address_type": Wallet.determineAddressType(wallet),
                 "signature": Wallet.sign(wallet.seedphrase,  wallet.address + this.to + timestamp + Number(this.amount).toFixed(1)),
                 "timestamp": timestamp
             },
@@ -113,15 +113,6 @@ export default class Send extends Vue {
         });
 
         console.log("TX has been sent");
-    }
-
-    determineAddressType(wallet: any): string {
-      if (wallet.stakeaccount) {
-        return "node";
-      }
-      else {
-        return "wallet";
-      }
     }
 }
 </script>
