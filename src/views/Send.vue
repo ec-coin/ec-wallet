@@ -1,5 +1,8 @@
 <template>
     <b-container>
+        <button class="btn btn-primary" v-if="!scan" @click="scan = true">Have QR Code?</button>
+        <qrcode-stream v-if="scan" @decode="onDecode"></qrcode-stream>
+
         <b-form @submit="sendTransaction">
             <b-form-group
                 id="input-group-1"
@@ -56,23 +59,22 @@
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
-import {mapState} from "vuex";
+import {mapGetters, mapState} from "vuex";
 import axios from "axios";
 import {Wallet} from "@/service/wallet";
 import {BASE_URL} from "@/main";
-
 @Component({
     computed: {
-        ...mapState(['wallets'])
+        ...mapGetters(['wallets'])
     }
 })
 export default class Send extends Vue {
-    public selected: string[] = [];
+    public selected = '';
     public options: any[] = [];
     public password = '';
-    public amount = 0;
     public to = '';
-    public wallets;
+    public amount = 0;
+    public scan = false;
 
     mounted() {
         (this as any).wallets.forEach(wallet => {
@@ -81,7 +83,7 @@ export default class Send extends Vue {
             }
 
             this.options.push({
-                value: [wallet.address, wallet.publicKey],
+                value: wallet.address,
                 text: `${wallet.name} (${wallet.address})`
             } as any);
         })
@@ -89,7 +91,7 @@ export default class Send extends Vue {
 
     async sendTransaction(e) {
         e.preventDefault();
-        const wallet = this.wallets.find(w => w.address == this.selected[0]);
+        const wallet = (this as any).wallets.find(w => w.address == this.selected[0]);
 
         const timestamp = new Date().getTime();
         await axios.post(`${BASE_URL}/transactions`,
@@ -113,6 +115,12 @@ export default class Send extends Vue {
         });
 
         console.log("TX has been sent");
+    }
+
+    onDecode (decodedString) {
+      const split = decodedString.split('::');
+      this.to = split[0];
+      this.amount = split[1];
     }
 }
 </script>

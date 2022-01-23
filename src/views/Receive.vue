@@ -1,4 +1,13 @@
 <template>
+    <b-container>
+        <b-form>
+            <b-form-group
+                id="input-group-1"
+                label="To"
+                label-for="input-1"
+                description="">
+                <b-form-select v-model="selected" :options="options"></b-form-select>
+            </b-form-group>
   <b-container>
     <b-form>
       <b-form-group
@@ -32,6 +41,7 @@
 <script lang="ts">
 import {Component, Vue, Watch} from 'vue-property-decorator';
 import {mapGetters, mapState} from "vuex";
+import {Wallet} from "@/service/wallet"; // @ is an alias to /src
 import VueQrCode from 'vue-weblineindia-qrcode'
 @Component({
   components: {
@@ -42,21 +52,21 @@ import VueQrCode from 'vue-weblineindia-qrcode'
   }
 })
 export default class Receive extends Vue {
-  public selected = '';
-  public options: any[] = [];
-  public amount = null;
+    public selected = '';
+    public options: any[] = [];
+    public amount = null;
 
-  mounted() {
-    (this as any).wallets.forEach(wallet => {
-      if (this.selected.length == 0) {
-        this.selected = wallet.address;
-      }
-      this.options.push({
-        value: wallet.address,
-        text: `${wallet.name} (${wallet.address})`
-      } as any);
-    })
-  }
+    mounted() {
+      (this as any).wallets.forEach(wallet => {
+        if (this.selected.length == 0) {
+          this.selected = wallet.address;
+        }
+        this.options.push({
+          value: wallet.address,
+          text: `${wallet.name} (${wallet.address})`
+        } as any);
+      })
+    }
 }
 </script>
 
