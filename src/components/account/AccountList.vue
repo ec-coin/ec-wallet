@@ -13,7 +13,6 @@
                              :current-page="currentPage"
                     ></b-table>
 
-
                     <b-pagination
                         v-model="currentPage"
                         :total-rows="validatedTransactions(wallet.address).length"

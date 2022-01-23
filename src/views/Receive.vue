@@ -1,13 +1,4 @@
 <template>
-    <b-container>
-        <b-form>
-            <b-form-group
-                id="input-group-1"
-                label="To"
-                label-for="input-1"
-                description="">
-                <b-form-select v-model="selected" :options="options"></b-form-select>
-            </b-form-group>
   <b-container>
     <b-form>
       <b-form-group
