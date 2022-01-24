@@ -46,17 +46,20 @@ import AppStorage from "@randlabs/encrypted-local-storage";
         ...mapState(['hasAWallet', 'isWalletUnlocked'])
     },
     methods: {
-        ...mapActions(['initWallet'])
+        ...mapActions(['initWallet', 'sync'])
     }
 })
 export default class App extends Vue {
     public username = '';
 
+    initWallet!: () => Promise<void>;
+    sync !: () => Promise<void>;
+
     async created() {
       this.username = await AppStorage.getItem("username");
+      await this.sync();
+      setInterval(async () => this.sync(), 5000);
     }
-
-    initWallet!: () => Promise<void>;
 
     async mounted(): Promise<void> {
         await this.initWallet();

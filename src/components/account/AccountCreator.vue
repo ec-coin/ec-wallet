@@ -61,6 +61,7 @@ export default class AccountCreator extends Vue {
     public name = '';
     public password = '';
     public mnemonic = '';
+    public stakeAccount = true;
     public isPasswordCorrect = false;
 
     createWallet!: (payload: any) => Promise<void>;
@@ -68,7 +69,7 @@ export default class AccountCreator extends Vue {
     generate(e: any) {
         e.preventDefault();
         this.mnemonic = bip39.generateMnemonic();
-        this.createWallet({ name: this.name, seedphrase: this.mnemonic, password: this.password});
+        this.createWallet({ name: this.name, seedphrase: this.mnemonic, password: this.password, stakeaccount: this.stakeAccount});
         this.name = '';
         this.isPasswordCorrect = false;
         this.password = '';

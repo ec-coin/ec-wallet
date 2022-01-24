@@ -10,14 +10,16 @@ Vue.config.productionTip = false
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import BootstrapVue, {IconsPlugin} from "bootstrap-vue";
+import VueQrcodeReader from "vue-qrcode-reader";
 
 // Make BootstrapVue available throughout your project
 Vue.use(BootstrapVue)
 // Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin)
 
-export const BASE_URL = 'http://seed001.ec.dylaan.nl:4567/';
-
+Vue.use(VueQrcodeReader);
+export const BASE_URL = 'http://localhost:4567';
+//export const BASE_URL = 'http://seed001.ec.dylaan.nl:4567/';
 
 new Vue({
   router,

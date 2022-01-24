@@ -43,4 +43,13 @@ export class Wallet {
         const signature = key.sign(hashedMsgBuffer);
         return signature.toDER('hex');
     }
+
+    static determineAddressType(wallet: any): string {
+        if (wallet.stakeaccount) {
+            return "node";
+        }
+        else {
+            return "wallet";
+        }
+    }
 }

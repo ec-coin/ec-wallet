@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import {Storage} from "@/service/storage";
 import {Wallet} from "@/service/wallet";
+import axios from "axios";
+import {BASE_URL} from "@/main";
 
 Vue.use(Vuex)
 
@@ -10,7 +12,7 @@ export default new Vuex.Store({
         isWalletUnlocked: false,
         hasAWallet: false,
         incorrectPassword: false,
-        wallets: [],
+        wallets: {},
         publicKey: '',
     },
     mutations: {
@@ -28,13 +30,30 @@ export default new Vuex.Store({
             state.hasAWallet = true;
         },
 
-        addWallet(state, { name, seedphrase }) {
-            (state as any).wallets.push({
+        addWallet(state, { name, seedphrase, stakeaccount }) {
+            const address = Wallet.getAddress(seedphrase);
+            Vue.set(state.wallets, address, {
                 name,
                 seedphrase,
+                stakeaccount,
+                balance: 0,
+                transactions: [],
                 address: Wallet.getAddress(seedphrase),
                 publicKey: Wallet.mnemonicToPublicKey(seedphrase)
             })
+        },
+
+        updateWallet(state, { address, balance, transactions }) {
+            if (address in state.wallets) {
+                state.wallets[address].balance = balance;
+                state.wallets[address].transactions = transactions.map(transaction => ({
+                    from: transaction.from,
+                    to: transaction.to,
+                    amount: transaction.amount,
+                    status: transaction.status,
+                    timestamp: transaction.timestamp.iMillis
+                }));
+            }
         }
     },
     actions: {
@@ -47,12 +66,15 @@ export default new Vuex.Store({
             commit('hasAWallet');
         },
 
-        async createWallet({ commit, state }, { name, seedphrase, password }) {
-            commit('addWallet', { name, seedphrase });
+        async createWallet({ commit, state }, { name, seedphrase, password, stakeaccount }) {
+            commit('addWallet', { name, seedphrase, stakeaccount });
             const data = JSON.stringify(state.wallets);
             Storage.saveEncrypted('wallets', data, password);
-            commit('hasAWallet');
-            commit('unlockWallet', state.wallets);
+
+            if (!state.isWalletUnlocked) {
+                commit('hasAWallet');
+                commit('unlockWallet', state.wallets);
+            }
         },
 
         async unlockWallet({ commit, state }, password) {
@@ -64,7 +86,27 @@ export default new Vuex.Store({
             }
 
             commit('unlockWallet', JSON.parse(wallets));
+        },
+
+        async sync({ commit, state }) {
+            for (const address in state.wallets) {
+                const balance = (await axios.get(`${BASE_URL}/balances?balance=` + address)).data.data;
+                const transactions = (await axios.get(`${BASE_URL}/transactions?from=` + address)).data.data;
+                commit('updateWallet', { address, balance, transactions });
+            }
+        },
+    },
+
+    getters: {
+        wallets: (state) => Object.values(state.wallets),
+        validatedTransactions: (state) => (address) => {
+            if (address in state.wallets) {
+                return state.wallets[address].transactions.filter(transaction => transaction.status === 'validated');
+            }
+
+            return [];
         }
     },
+
     modules: {}
 })
