@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import {Storage} from "@/service/storage";
 import {Wallet} from "@/service/wallet";
 import axios from "axios";
+import {BASE_URL} from "@/main";
 
 Vue.use(Vuex)
 
@@ -89,8 +90,8 @@ export default new Vuex.Store({
 
         async sync({ commit, state }) {
             for (const address in state.wallets) {
-                const balance = (await axios.get(`http://localhost:4567/balances?balance=` + address)).data.data;
-                const transactions = (await axios.get(`http://localhost:4567/transactions?from=` + address)).data.data;
+                const balance = (await axios.get(`${BASE_URL}/balances?balance=` + address)).data.data;
+                const transactions = (await axios.get(`${BASE_URL}/transactions?from=` + address)).data.data;
                 commit('updateWallet', { address, balance, transactions });
             }
         },
