@@ -5,6 +5,7 @@ import Send from "@/views/Send.vue";
 import Receive from "@/views/Receive.vue";
 import Stake from "@/views/Stake.vue";
 import NetworkTX from "@/views/NetworkTx.vue";
+import Testing from "@/views/Testing.vue";
 
 Vue.use(VueRouter)
 
@@ -32,11 +33,15 @@ const routes: Array<RouteConfig> = [
     name: 'Stake',
     component: Stake
   },
-
   {
     path: '/networktx',
     name: 'NetworkTransactions',
     component: NetworkTX
+  },
+  {
+    path: '/testing',
+    name: 'Testing',
+    component: Testing
   }
 ]
 

@@ -51,9 +51,6 @@
 
             <b-button type="submit" variant="primary" v-if="amount > 0" block>Send</b-button>
         </b-form>
-        <b-button @click="testTransactions">
-          Test transactions
-        </b-button>
     </b-container>
 </template>
 
@@ -75,12 +72,6 @@ export default class Send extends Vue {
     public amount = 0;
     public to = '';
     public wallets;
-
-    public testAddresses = [
-      '0xeGgM89aqjucuPybGqLPB3ASwrjpcVcE5iDEDpf4Ksxv',
-      '0x3hLz5b6ztVQaYBAC9k4JvkJAk6vP1E3PvFHnPe4h1cjr',
-      '0x6oMokioyFBRWa3ozvJBN8mnbkS14qsefYL2cgoX5Zzog'
-    ];
 
     mounted() {
         (this as any).wallets.forEach(wallet => {
@@ -111,7 +102,6 @@ export default class Send extends Vue {
             },
             {
                 headers: {
-                    'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 }
             }
@@ -120,25 +110,6 @@ export default class Send extends Vue {
         });
 
         console.log("TX has been sent");
-    }
-
-    async testTransactions(e) {
-      const threshold = 640000;
-
-      for (let i = 0; i < threshold;) {
-        this.wallets.forEach((wallet) => {
-          this.selected = [wallet.address];
-          this.testAddresses.forEach((address) => {
-            setTimeout(() => {
-              this.amount = Math.floor(Math.random() * 10);
-              this.to = address;
-
-              i++;
-              this.sendTransaction(e)
-            }, 500);
-          })
-        })
-      }
     }
 }
 </script>
