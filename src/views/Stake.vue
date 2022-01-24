@@ -7,7 +7,7 @@
           label="From"
           label-for="input-1"
           description="">
-        <b-form-select v-model="selectedFrom" :options="walletaccounts"></b-form-select>
+        <b-form-select v-model="selectedFrom" :options="walletaccounts" required></b-form-select>
       </b-form-group>
 
       <b-form-group
@@ -15,7 +15,7 @@
           label="To"
           label-for="input-1"
           description="">
-        <b-form-select v-model="selectedTo" :options="stakeaccounts"></b-form-select>
+        <b-form-select v-model="selectedTo" :options="stakeaccounts" required></b-form-select>
       </b-form-group>
 
       <b-form-group
@@ -59,7 +59,8 @@ export default class Stake extends Vue {
   public stakeaccounts: any[] = [];
 
   mounted() {
-    (this as any).wallets.forEach(wallet => {
+    for (const address in (this as any).wallets) {
+      const wallet = (this as any).wallets[address];
       if (wallet.stakeaccount === 'true') {
         this.stakeaccounts.push({
           value: [wallet.address, wallet.publicKey],
@@ -72,25 +73,27 @@ export default class Stake extends Vue {
           text: `${wallet.balance} EC - ${wallet.name} (${wallet.address})`
         } as any);
       }
-    })
-    this.getBalance();
+    }
+    this.getStake();
   }
 
-  getBalance() {
-    let wallet = (this as any).wallets.find(w => w.address == this.stakeaccounts[0].value[0]);
+  getStake() {
+    if (this.stakeaccounts[0]) {
+      const wallet = (this as any).wallets[this.stakeaccounts[0].value[0]];
 
-    axios.get(`${BASE_URL}/balances?stake=` + wallet.address, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-      }
-    }).then(response => {
-          if (response.data.status == "SUCCESS") {
-            this.currentStake = response.data.data;
-          }
-        })
-        .catch(e => {
-          console.log(e);
-        });
+      axios.get(`${BASE_URL}/balances?stake=` + wallet.address, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        }
+      }).then(response => {
+        if (response.data.status == "SUCCESS") {
+          this.currentStake = response.data.data;
+        }
+      })
+      .catch(e => {
+        console.log(e);
+      });
+    }
   }
 
   async stakeAmount(e: any) {
@@ -101,8 +104,6 @@ export default class Stake extends Vue {
   async stake() {
     const timestamp = new Date().getTime();
     const wallet = (this as any).wallets.find(w => w.address == this.selectedFrom[0]);
-    console.log("signature payload");
-    console.log(wallet.address + this.selectedTo[0] + timestamp + Number(this.amount).toFixed(1))
 
     await axios.post(`${BASE_URL}/transactions`,
         {

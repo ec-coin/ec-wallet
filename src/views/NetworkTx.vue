@@ -2,12 +2,12 @@
   <b-container>
     <b-row>
       <b-col cols="12">
-        <TransactionsOverview title="Network transactions" path="transactions" :filter="(obj => obj)"/>
+        <TransactionsOverview title="Network transactions" :filter="(obj => obj)"/>
       </b-col>
     </b-row>
     <b-row>
       <b-col cols="12">
-        <TransactionsOverview title="Pending transactions" path="transactions" :filter="(obj => obj.status === 'pending')"/>
+        <TransactionsOverview title="Pending transactions" :filter="(obj => obj.status === 'pending')"/>
       </b-col>
     </b-row>
   </b-container>

@@ -14,6 +14,7 @@ export default new Vuex.Store({
         incorrectPassword: false,
         wallets: {},
         publicKey: '',
+        networkTransactions: []
     },
     mutations: {
         unlockWallet(state, wallets) {
@@ -54,6 +55,16 @@ export default new Vuex.Store({
                     timestamp: transaction.timestamp.iMillis
                 }));
             }
+        },
+
+        updateNetworkTransactions(state, { networkTransactions }) {
+            state.networkTransactions = networkTransactions.map(transaction => ({
+                from: transaction.from,
+                to: transaction.to,
+                amount: transaction.amount,
+                status: transaction.status,
+                timestamp: transaction.timestamp.iMillis
+            }));
         }
     },
     actions: {
@@ -94,7 +105,9 @@ export default new Vuex.Store({
                 const transactions = (await axios.get(`${BASE_URL}/transactions?from=` + address)).data.data;
                 commit('updateWallet', { address, balance, transactions });
             }
-        },
+            const networkTransactions = (await axios.get(`${BASE_URL}/transactions`)).data.data;
+            commit('updateNetworkTransactions', { networkTransactions });
+        }
     },
 
     getters: {
@@ -105,7 +118,8 @@ export default new Vuex.Store({
             }
 
             return [];
-        }
+        },
+        networkTransactions: (state) => state.networkTransactions
     },
 
     modules: {}
