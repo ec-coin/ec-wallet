@@ -33,6 +33,7 @@
                     id="input-1"
                     v-model="amount"
                     type="number"
+                    step="0.01"
                     placeholder="10"
                     required
                 ></b-form-input>
@@ -84,21 +85,21 @@ export default class Send extends Vue {
 
             this.options.push({
                 value: wallet.address,
-                text: `${wallet.name} (${wallet.address})`
+                text: `${wallet.balance} EC - ${wallet.name} (${wallet.address})`
             } as any);
         })
     }
 
     async sendTransaction(e) {
         e.preventDefault();
-        const wallet = (this as any).wallets.find(w => w.address == this.selected[0]);
+        const wallet = (this as any).wallets.find(w => w.address == this.selected);
 
         const timestamp = new Date().getTime();
         await axios.post(`${BASE_URL}/transactions`,
             {
                 "from": wallet.address,
                 "to": this.to,
-                "amount": parseFloat(this.amount as any),
+                "amount": this.amount,
                 "public_key": wallet.publicKey,
                 "address_type": Wallet.determineAddressType(wallet),
                 "signature": Wallet.sign(wallet.seedphrase,  wallet.address + this.to + timestamp + Number(this.amount).toFixed(1)),
@@ -112,6 +113,7 @@ export default class Send extends Vue {
             }
         ).catch(error => {
             console.log(error.message);
+            console.log(error);
         });
 
         console.log("TX has been sent");

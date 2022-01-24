@@ -88,14 +88,12 @@ export default new Vuex.Store({
         },
 
         async sync({ commit, state }) {
-            console.log('Syncing....');
-
             for (const address in state.wallets) {
                 const balance = (await axios.get(`http://localhost:4567/balances?balance=` + address)).data.data;
                 const transactions = (await axios.get(`http://localhost:4567/transactions?from=` + address)).data.data;
                 commit('updateWallet', { address, balance, transactions });
             }
-        }
+        },
     },
 
     getters: {
