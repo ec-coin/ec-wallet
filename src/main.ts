@@ -18,8 +18,8 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 
 Vue.use(VueQrcodeReader);
-export const BASE_URL = 'http://localhost:4567';
-//export const BASE_URL = 'http://seed001.ec.dylaan.nl:4567/';
+// export const BASE_URL = 'http://localhost:4567';
+export const BASE_URL = 'http://seed001.ec.dylaan.nl:4567/';
 
 new Vue({
   router,
