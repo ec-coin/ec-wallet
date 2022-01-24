@@ -15,7 +15,8 @@ export class Storage {
 
         try {
             const decrypted = encryptpwd.decrypt(value, password);
-            const checksum = decrypted.toString().substr(0, 10);
+            const checksum = decrypted.toString().substr(0, decrypted.indexOf(':'));
+
             if (checksum === this.getChecksum(password)) {
                 return decrypted.substr(decrypted.indexOf(':') + 1)
             }
@@ -26,7 +27,6 @@ export class Storage {
 
         return null;
     }
-
 
     static isPasswordCorrect(key: string, password: string): boolean {
         return this.getEncrypted(key, password) !== null;

@@ -36,15 +36,23 @@
                 ></b-form-textarea>
             </b-form-group>
 
-            <b-alert variant="danger" v-if="!isPasswordCorrect && name.length >= 3 && password.length > 0" show>This password is incorrect!</b-alert>
-            <b-button type="submit" variant="primary" block :disabled="!isPasswordCorrect || name.length < 3 || seedphrase.split(' ').length < 12">Import wallet</b-button>
+            <b-form-checkbox
+                id="checkbox-1"
+                v-model="stakeAccount"
+                name="checkbox-1"
+                value="true"
+                unchecked-value="false">
+              Is Stake Account
+            </b-form-checkbox>
+
+            <b-alert style="margin-top: 10px;" variant="danger" v-if="!isPasswordCorrect && name.length >= 3 && password.length > 0" show>This password is incorrect!</b-alert>
+            <b-button style="margin-top: 10px;" type="submit" variant="primary" block :disabled="!isPasswordCorrect || name.length < 3 || seedphrase.split(' ').length < 12">Import wallet</b-button>
 
         </b-form>
     </b-card>
 </template>
 <script lang="ts">
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
-import * as bip39 from "bip39";
 import {Storage} from "@/service/storage";
 import {Wallet} from "@/service/wallet";
 import {mapActions} from "vuex";
@@ -58,18 +66,15 @@ export default class AccountImporter extends Vue {
     public name = '';
     public password = '';
     public seedphrase = '';
+    public stakeAccount = 'false';
 
     createWallet!: (payload: any) => Promise<void>;
 
     public isPasswordCorrect = false;
 
-    mounted() {
-        console.log(Wallet.generateMnemonic());
-    }
-
     async submit(e: any) {
         e.preventDefault();
-        await this.createWallet({ name: this.name, seedphrase: this.seedphrase, password: this.password });
+        await this.createWallet({ name: this.name, seedphrase: this.seedphrase, password: this.password, stakeaccount: this.stakeAccount });
         this.name = '';
         this.seedphrase = '';
         this.password = '';

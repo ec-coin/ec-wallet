@@ -36,11 +36,20 @@ export class Wallet {
     }
 
     static sign(mnemonic: string, payload: string) {
-        const key = ec.keyFromPrivate(this.mnemonicToPrivateKey(mnemonic));
+        const key = ec.keyFromPrivate(this.mnemonicToPrivateKey(mnemonic));    
         const encoder = new TextEncoder();
         const msgBuffer = encoder.encode(payload);
         const hashedMsgBuffer = crypto.createHash("sha256").update(msgBuffer).digest();
         const signature = key.sign(hashedMsgBuffer);
         return signature.toDER('hex');
+    }
+
+    static determineAddressType(wallet: any): string {
+        if (wallet.stakeaccount) {
+            return "node";
+        }
+        else {
+            return "wallet";
+        }
     }
 }

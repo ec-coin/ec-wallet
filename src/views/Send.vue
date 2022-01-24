@@ -3,7 +3,7 @@
         <button class="btn btn-primary" v-if="!scan" @click="scan = true">Have QR Code?</button>
         <qrcode-stream v-if="scan" @decode="onDecode"></qrcode-stream>
 
-        <b-form>
+        <b-form @submit="sendTransaction">
             <b-form-group
                 id="input-group-1"
                 label="From"
@@ -20,7 +20,7 @@
                     id="input-1"
                     v-model="to"
                     type="text"
-                    placeholder="0xFFFFFFFF"
+                    placeholder="ffffffffffffffffffffffffffffffffffffffffffff"
                     required
                 ></b-form-input>
             </b-form-group>
@@ -33,6 +33,7 @@
                     id="input-1"
                     v-model="amount"
                     type="number"
+                    step="0.01"
                     placeholder="10"
                     required
                 ></b-form-input>
@@ -52,19 +53,17 @@
                 ></b-form-input>
             </b-form-group>
 
-            <b-button type="submit" variant="primary" block>Send</b-button>
+            <b-button type="submit" variant="primary" v-if="amount > 0" block>Send</b-button>
         </b-form>
     </b-container>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import AccountCreator from '@/components/account/AccountCreator.vue';
-import AccountImporter from "@/components/account/AccountImporter.vue";
-import AccountList from "@/components/account/AccountList.vue";
+import {Component, Vue} from 'vue-property-decorator';
 import {mapGetters, mapState} from "vuex";
-import {Wallet} from "@/service/wallet"; // @ is an alias to /src
-
+import axios from "axios";
+import {Wallet} from "@/service/wallet";
+import {BASE_URL} from "@/main";
 @Component({
     computed: {
         ...mapGetters(['wallets'])
@@ -86,15 +85,44 @@ export default class Send extends Vue {
 
             this.options.push({
                 value: wallet.address,
-                text: `${wallet.name} (${wallet.address})`
+                text: `${wallet.balance} EC - ${wallet.name} (${wallet.address})`
             } as any);
         })
     }
 
+    async sendTransaction(e) {
+        e.preventDefault();
+        const wallet = (this as any).wallets.find(w => w.address == this.selected);
+
+        const timestamp = new Date().getTime();
+        await axios.post(`${BASE_URL}/transactions`,
+            {
+                "from": wallet.address,
+                "to": this.to,
+                "amount": this.amount,
+                "public_key": wallet.publicKey,
+                "address_type": Wallet.determineAddressType(wallet),
+                "signature": Wallet.sign(wallet.seedphrase,  wallet.address + this.to + timestamp + Number(this.amount).toFixed(1)),
+                "timestamp": timestamp
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                }
+            }
+        ).catch(error => {
+            console.log(error.message);
+            console.log(error);
+        });
+
+        console.log("TX has been sent");
+    }
+
     onDecode (decodedString) {
-        const split = decodedString.split('::');
-        this.to = split[0];
-        this.amount = split[1];
+      const split = decodedString.split('::');
+      this.to = split[0];
+      this.amount = split[1];
     }
 }
 </script>

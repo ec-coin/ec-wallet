@@ -6,7 +6,7 @@
                 <div class="my-4"></div>
                 <AccountImporter></AccountImporter>
             </b-col>
-            <b-col cols="8">
+            <b-col cols="9">
                 <AccountList></AccountList>
             </b-col>
         </b-row>

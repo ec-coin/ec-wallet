@@ -2,6 +2,20 @@
     <b-container>
         <h2>Setup your wallet</h2>
         <b-form @submit="submit">
+          <b-form-group
+              id="input-group-1"
+              label="Username:"
+              label-for="input-1"
+              description="Choose a personal username for your account.">
+            <b-form-input
+                id="input-1"
+                v-model="username"
+                type="text"
+                placeholder="Username"
+                required
+            ></b-form-input>
+          </b-form-group>
+
             <b-form-group
                 id="input-group-1"
                 label="Password:"
@@ -58,6 +72,7 @@ import AppStorage from "@randlabs/encrypted-local-storage";
     }
 })
 export default class SetupWallet extends Vue {
+    public username = '';
     public password = '';
     public confirmPassword = '';
     public seedphrase = Wallet.generateMnemonic();
@@ -72,8 +87,11 @@ export default class SetupWallet extends Vue {
         await this.createWallet({
             name: 'Main Wallet',
             seedphrase: this.seedphrase,
-            password: this.password
+            password: this.password,
+            stakeaccount: 'false'
         });
+
+        await AppStorage.setItem("username", this.username);
     }
 }
 </script>

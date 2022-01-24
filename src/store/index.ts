@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import {Storage} from "@/service/storage";
 import {Wallet} from "@/service/wallet";
 import axios from "axios";
+import {BASE_URL} from "@/main";
 
 Vue.use(Vuex)
 
@@ -11,7 +12,8 @@ export default new Vuex.Store({
         isWalletUnlocked: false,
         hasAWallet: false,
         incorrectPassword: false,
-        wallets: {}
+        wallets: {},
+        publicKey: '',
     },
     mutations: {
         unlockWallet(state, wallets) {
@@ -28,15 +30,17 @@ export default new Vuex.Store({
             state.hasAWallet = true;
         },
 
-        addWallet(state, { name, seedphrase }) {
+        addWallet(state, { name, seedphrase, stakeaccount }) {
             const address = Wallet.getAddress(seedphrase);
             Vue.set(state.wallets, address, {
                 name,
                 seedphrase,
-                address,
+                stakeaccount,
                 balance: 0,
-                transactions: []
-            });
+                transactions: [],
+                address: Wallet.getAddress(seedphrase),
+                publicKey: Wallet.mnemonicToPublicKey(seedphrase)
+            })
         },
 
         updateWallet(state, { address, balance, transactions }) {
@@ -62,8 +66,8 @@ export default new Vuex.Store({
             commit('hasAWallet');
         },
 
-        async createWallet({ commit, state }, { name, seedphrase, password }) {
-            commit('addWallet', { name, seedphrase });
+        async createWallet({ commit, state }, { name, seedphrase, password, stakeaccount }) {
+            commit('addWallet', { name, seedphrase, stakeaccount });
             const data = JSON.stringify(state.wallets);
             Storage.saveEncrypted('wallets', data, password);
 
@@ -85,14 +89,12 @@ export default new Vuex.Store({
         },
 
         async sync({ commit, state }) {
-            console.log('Syncing....');
-
             for (const address in state.wallets) {
-                const balance = (await axios.get(`http://localhost:4567/balances?balance=` + address)).data.data;
-                const transactions = (await axios.get(`http://localhost:4567/transactions?from=` + address)).data.data;
+                const balance = (await axios.get(`${BASE_URL}/balances?balance=` + address)).data.data;
+                const transactions = (await axios.get(`${BASE_URL}/transactions?from=` + address)).data.data;
                 commit('updateWallet', { address, balance, transactions });
             }
-        }
+        },
     },
 
     getters: {
