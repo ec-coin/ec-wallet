@@ -36,7 +36,7 @@ export class Wallet {
     }
 
     static sign(mnemonic: string, payload: string) {
-        const key = ec.keyFromPrivate(this.mnemonicToPrivateKey(mnemonic));    
+        const key = ec.keyFromPrivate(this.mnemonicToPrivateKey(mnemonic));
         const encoder = new TextEncoder();
         const msgBuffer = encoder.encode(payload);
         const hashedMsgBuffer = crypto.createHash("sha256").update(msgBuffer).digest();
