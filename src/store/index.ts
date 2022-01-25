@@ -33,14 +33,32 @@ export default new Vuex.Store({
 
         addWallet(state, { name, seedphrase, stakeaccount }) {
             const address = Wallet.getAddress(seedphrase);
+            const publicKey = Wallet.mnemonicToPublicKey(seedphrase);
+            const timestamp = new Date().getTime();
+
+            if (stakeaccount === 'true') {
+                axios.post(`${BASE_URL}/register_node`, {
+                    "address": address,
+                    "public_key": publicKey,
+                    "signature": Wallet.sign(seedphrase,  address + "stake_register" + timestamp + Number(0).toFixed(1)),
+                    "timestamp": timestamp
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    }
+                });
+            }
+
             Vue.set(state.wallets, address, {
                 name,
                 seedphrase,
                 stakeaccount,
                 balance: 0,
                 transactions: [],
-                address: Wallet.getAddress(seedphrase),
-                publicKey: Wallet.mnemonicToPublicKey(seedphrase)
+                address: address,
+                publicKey: publicKey
             })
         },
 
