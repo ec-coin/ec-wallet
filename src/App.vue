@@ -39,6 +39,7 @@ import SetupWallet from "@/components/init/SetupWallet.vue";
 import {mapActions, mapState} from "vuex";
 import UnlockWallet from "@/components/init/UnlockWallet.vue";
 import AppStorage from "@randlabs/encrypted-local-storage";
+import {Wallet} from "@/service/wallet";
 
 @Component({
     components: {SetupWallet, UnlockWallet},
@@ -63,6 +64,8 @@ export default class App extends Vue {
 
     async mounted(): Promise<void> {
         await this.initWallet();
+
+        console.log(Wallet.mnemonicToPrivateKey('bind grunt joke slab debris mean build cry image solid eternal sign'))
     }
 }
 </script>
