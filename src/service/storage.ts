@@ -34,6 +34,6 @@ export class Storage {
 
     private static getChecksum(password: string) {
         const sha256Hasher = crypto.createHash("sha256");
-        return sha256Hasher.update(password).digest().toString('utf-8', 0, 10);
+        return sha256Hasher.update(password).digest().toString('utf-8', 0, 9);
     }
 }

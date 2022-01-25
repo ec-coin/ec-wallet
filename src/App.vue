@@ -14,6 +14,7 @@
                             <b-nav-item exact-active-class="active" to="/receive">Receive</b-nav-item>
                             <b-nav-item exact-active-class="active" to="/Stake">Stake</b-nav-item>
                             <b-nav-item exact-active-class="active" to="/NetworkTX">Network Transactions</b-nav-item>
+                            <b-nav-item exact-active-class="active" to="/testing">Testing</b-nav-item>
                         </b-navbar-nav>
                     </b-collapse>
                 </b-navbar>
