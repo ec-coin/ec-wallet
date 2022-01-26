@@ -1,5 +1,6 @@
 <template>
     <div id="app">
+        <input type="number" v-model="port">
         <template v-if="hasAWallet && isWalletUnlocked">
             <b-container>
                 <b-navbar toggleable="lg" type="dark" variant="primary">
@@ -33,13 +34,14 @@
 </template>
 
 <script lang="ts">
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Vue, Watch} from 'vue-property-decorator';
 
 import SetupWallet from "@/components/init/SetupWallet.vue";
 import {mapActions, mapState} from "vuex";
 import UnlockWallet from "@/components/init/UnlockWallet.vue";
 import AppStorage from "@randlabs/encrypted-local-storage";
 import {Wallet} from "@/service/wallet";
+import {changeBaseUrl} from "@/main";
 
 @Component({
     components: {SetupWallet, UnlockWallet},
@@ -52,6 +54,7 @@ import {Wallet} from "@/service/wallet";
 })
 export default class App extends Vue {
     public username = '';
+    public port = 4567;
 
     initWallet!: () => Promise<void>;
     sync !: () => Promise<void>;
@@ -66,6 +69,13 @@ export default class App extends Vue {
         await this.initWallet();
 
         console.log(Wallet.mnemonicToPrivateKey('bind grunt joke slab debris mean build cry image solid eternal sign'))
+    }
+
+    @Watch('port')
+    updatePort() {
+        const url = `http://178.63.163.115:${this.port}`
+        console.log(url);
+        changeBaseUrl(url);
     }
 }
 </script>
