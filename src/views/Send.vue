@@ -5,7 +5,7 @@
 
         <br>
         <br>
-        <b-alert variant="success" :show="send">Transaction send!</b-alert>
+        <b-alert variant="success" :show="send">Transaction sent!</b-alert>
 
 
         <b-form @submit="sendTransaction">
