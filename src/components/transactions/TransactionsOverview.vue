@@ -1,6 +1,6 @@
 <template>
   <b-card-body>
-    <h4>{{ title }}</h4>
+    <h4>{{ title }} - {{ networkTransactions.filter(filter).length}}</h4>
     <b-table responsive striped hover
              :items="networkTransactions.filter(filter)"
              :per-page="perPage"
@@ -9,7 +9,7 @@
 
     <b-pagination
         v-model="currentPage"
-        :total-rows="networkTransactions.length"
+        :total-rows="networkTransactions.filter(filter).length"
         :per-page="perPage"
         aria-controls="my-table"
         limit="7"
@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import {Component, Prop, Vue} from 'vue-property-decorator';
-import {mapActions, mapGetters} from "vuex";
+import {mapGetters} from "vuex";
 
 @Component({
   computed: {

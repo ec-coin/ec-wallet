@@ -14,7 +14,8 @@ export default new Vuex.Store({
         incorrectPassword: false,
         wallets: {},
         publicKey: '',
-        networkTransactions: []
+        networkTransactions: [],
+        currentTransactionPage: 0
     },
     mutations: {
         unlockWallet(state, wallets) {
@@ -75,14 +76,17 @@ export default new Vuex.Store({
             }
         },
 
-        updateNetworkTransactions(state, { networkTransactions }) {
+        updateNetworkTransactions(state, { networkTransactions, currentTransactionPage }) {
+            console.log(networkTransactions);
+
             state.networkTransactions = networkTransactions.map(transaction => ({
                 from: transaction.from,
                 to: transaction.to,
                 amount: transaction.amount,
                 status: transaction.status,
-                timestamp: transaction.timestamp.iMillis
+                timestamp: transaction.timestamp.iMillis === undefined ? transaction.timestamp : transaction.timestamp.iMillis
             }));
+            state.currentTransactionPage += currentTransactionPage;
         }
     },
     actions: {
@@ -113,7 +117,6 @@ export default new Vuex.Store({
                 commit('incorrectPassword');
                 return;
             }
-
             commit('unlockWallet', JSON.parse(wallets));
         },
 
@@ -123,8 +126,19 @@ export default new Vuex.Store({
                 const transactions = (await axios.get(`${BASE_URL}/transactions?from=` + address)).data.data;
                 commit('updateWallet', { address, balance, transactions });
             }
-            const networkTransactions = (await axios.get(`${BASE_URL}/transactions`)).data.data;
-            commit('updateNetworkTransactions', { networkTransactions });
+
+            const transactions = (await axios.get(`${BASE_URL}/transactions?tx=${state.currentTransactionPage}&window=${100}`)).data.data;
+            const currentTransactionPage = transactions.length;
+            const networkTransactions = state.networkTransactions;
+
+            if (currentTransactionPage != 0) {
+                for (const transaction in transactions) {
+                    if (networkTransactions.indexOf(transactions[transaction]) === -1) {
+                        networkTransactions.push(transactions[transaction])
+                    }
+                }
+                commit('updateNetworkTransactions', { networkTransactions, currentTransactionPage });
+            }
         }
     },
 
