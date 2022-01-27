@@ -8,12 +8,12 @@
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
-import {mapState} from "vuex";
+import {mapGetters} from "vuex";
 import axios from "axios";
 
 @Component({
   computed: {
-    ...mapState(['wallets'])
+    ...mapGetters(['wallets'])
   }
 })
 export default class Testing extends Vue {

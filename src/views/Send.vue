@@ -3,6 +3,11 @@
         <button class="btn btn-primary" v-if="!scan" @click="scan = true">Have QR Code?</button>
         <qrcode-stream v-if="scan" @decode="onDecode"></qrcode-stream>
 
+        <br>
+        <br>
+        <b-alert variant="success" :show="send">Transaction sent!</b-alert>
+
+
         <b-form @submit="sendTransaction">
             <b-form-group
                 id="input-group-1"
@@ -39,19 +44,19 @@
                 ></b-form-input>
             </b-form-group>
 
-            <b-form-group
-                id="input-group-1"
-                label="Password:"
-                label-for="input-1"
-                description="">
-                <b-form-input
-                    id="input-1"
-                    v-model="password"
-                    type="password"
-                    placeholder="Password"
-                    required
-                ></b-form-input>
-            </b-form-group>
+<!--            <b-form-group-->
+<!--                id="input-group-1"-->
+<!--                label="Password:"-->
+<!--                label-for="input-1"-->
+<!--                description="">-->
+<!--                <b-form-input-->
+<!--                    id="input-1"-->
+<!--                    v-model="password"-->
+<!--                    type="password"-->
+<!--                    placeholder="Password"-->
+<!--                    required-->
+<!--                ></b-form-input>-->
+<!--            </b-form-group>-->
 
             <b-button type="submit" variant="primary" v-if="amount > 0" block>Send</b-button>
         </b-form>
@@ -76,6 +81,7 @@ export default class Send extends Vue {
     public to = '';
     public amount = 0;
     public scan = false;
+    public send = false;
 
     mounted() {
         (this as any).wallets.forEach(wallet => {
@@ -118,6 +124,7 @@ export default class Send extends Vue {
         });
 
         console.log("TX has been sent");
+        this.send = true;
     }
 
     onDecode (decodedString) {
