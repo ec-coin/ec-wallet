@@ -18,7 +18,8 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 
 Vue.use(VueQrcodeReader);
-export let BASE_URL = 'http://178.63.163.115:4567';
+//export let BASE_URL = 'http://178.63.163.115:4567';
+export let BASE_URL = 'http://localhost:4567';
 
 export function changeBaseUrl(url) {
   BASE_URL = url;

@@ -14,7 +14,7 @@
                             <b-nav-item exact-active-class="active" to="/send">Send</b-nav-item>
                             <b-nav-item exact-active-class="active" to="/receive">Receive</b-nav-item>
                             <b-nav-item exact-active-class="active" to="/Stake">Stake</b-nav-item>
-                            <b-nav-item exact-active-class="active" to="/NetworkTX">Network Transactions</b-nav-item>
+                            <b-nav-item exact-active-class="active" to="/NetworkTX">(Network) Transactions</b-nav-item>
                             <b-nav-item exact-active-class="active" to="/testing">Testing</b-nav-item>
                         </b-navbar-nav>
                     </b-collapse>
@@ -49,7 +49,7 @@ import {changeBaseUrl} from "@/main";
         ...mapState(['hasAWallet', 'isWalletUnlocked'])
     },
     methods: {
-        ...mapActions(['initWallet', 'sync'])
+        ...mapActions(['initWallet', 'sync', 'getTransactions'])
     }
 })
 export default class App extends Vue {
@@ -67,7 +67,6 @@ export default class App extends Vue {
 
     async mounted(): Promise<void> {
         await this.initWallet();
-
         console.log(Wallet.mnemonicToPrivateKey('bind grunt joke slab debris mean build cry image solid eternal sign'))
     }
 

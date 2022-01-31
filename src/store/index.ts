@@ -15,7 +15,8 @@ export default new Vuex.Store({
         wallets: {},
         publicKey: '',
         networkTransactions: [],
-        currentTransactionPage: 0
+        pendingTransactions: [],
+        totalRows: {}
     },
     mutations: {
         unlockWallet(state, wallets) {
@@ -76,17 +77,23 @@ export default new Vuex.Store({
             }
         },
 
-        updateNetworkTransactions(state, { networkTransactions, currentTransactionPage }) {
-            console.log(networkTransactions);
-
-            state.networkTransactions = networkTransactions.map(transaction => ({
+        updateTransactions(state, { transactions, metaData, title }) {
+            const mappedTransactions = transactions.map(transaction => ({
                 from: transaction.from,
                 to: transaction.to,
                 amount: transaction.amount,
                 status: transaction.status,
                 timestamp: transaction.timestamp.iMillis === undefined ? transaction.timestamp : transaction.timestamp.iMillis
             }));
-            state.currentTransactionPage += currentTransactionPage;
+
+            if (title === "Network transactions") {
+                state.networkTransactions = mappedTransactions;
+            }
+            else {
+                state.pendingTransactions = mappedTransactions;
+            }
+
+            state.totalRows[title] = metaData.total_size;
         }
     },
     actions: {
@@ -126,20 +133,13 @@ export default new Vuex.Store({
                 const transactions = (await axios.get(`${BASE_URL}/transactions?from=` + address)).data.data;
                 commit('updateWallet', { address, balance, transactions });
             }
+        },
 
-            const transactions = (await axios.get(`${BASE_URL}/transactions?tx=${state.currentTransactionPage}&window=${100}`)).data.data;
-            const currentTransactionPage = transactions.length;
-            const networkTransactions = state.networkTransactions;
-
-            if (currentTransactionPage != 0) {
-                for (const transaction in transactions) {
-                    if (networkTransactions.indexOf(transactions[transaction]) === -1) {
-                        networkTransactions.push(transactions[transaction])
-                    }
-                }
-                commit('updateNetworkTransactions', { networkTransactions, currentTransactionPage });
-            }
-        }
+        async getTransactions({ commit, state }, { currentPage, pending }) {
+            const request = (await axios.get(`${BASE_URL}/transactions?tx=${(currentPage - 1) * 10}&window=10&pending=${pending}`)).data;
+            const title = pending ? "Pending transactions" : "Network transactions";
+            commit('updateTransactions', { transactions: request.data, metaData: request.meta_data, title: title});
+        },
     },
 
     getters: {
@@ -151,7 +151,9 @@ export default new Vuex.Store({
 
             return [];
         },
-        networkTransactions: (state) => state.networkTransactions
+        networkTransactions: (state) => state.networkTransactions,
+        pendingTransactions: (state) => state.pendingTransactions,
+        totalRows: (state) => state.totalRows
     },
 
     modules: {}
