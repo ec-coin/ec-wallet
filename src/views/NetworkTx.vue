@@ -2,12 +2,12 @@
   <b-container>
     <b-row>
       <b-col cols="12">
-        <TransactionsOverview title="Network transactions" :transactions="networkTransactions" :pending-or-not="false"/>
+        <TransactionsOverview title="Network transactions" :transactions="networkTransactions" :wallet-name="''" :pending-or-not="false"/>
       </b-col>
     </b-row>
     <b-row>
       <b-col cols="12">
-        <TransactionsOverview title="Pending transactions" :transactions="pendingTransactions" :pending-or-not="true"/>
+        <TransactionsOverview title="Pending transactions" :transactions="pendingTransactions" :wallet-name="''" :pending-or-not="true"/>
       </b-col>
     </b-row>
   </b-container>

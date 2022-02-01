@@ -64,7 +64,7 @@ export default new Vuex.Store({
             })
         },
 
-        updateWallet(state, { address, balance, transactions }) {
+        updateWallet(state, { address, balance, transactions, title, metaData }) {
             if (address in state.wallets) {
                 state.wallets[address].balance = balance;
                 state.wallets[address].transactions = transactions.map(transaction => ({
@@ -75,6 +75,9 @@ export default new Vuex.Store({
                     timestamp: transaction.timestamp.iMillis
                 }));
             }
+            console.log("transactionssssssssssssssssssssssssssssssssssssssssss: ");
+            console.log(transactions)
+            state.totalRows[title] = metaData.total_size;
         },
 
         updateTransactions(state, { transactions, metaData, title }) {
@@ -127,12 +130,10 @@ export default new Vuex.Store({
             commit('unlockWallet', JSON.parse(wallets));
         },
 
-        async sync({ commit, state }) {
-            for (const address in state.wallets) {
-                const balance = (await axios.get(`${BASE_URL}/balances?balance=` + address)).data.data;
-                const transactions = (await axios.get(`${BASE_URL}/transactions?from=` + address)).data.data;
-                commit('updateWallet', { address, balance, transactions });
-            }
+        async sync({ commit, state }, { currentPage, title, address }) {
+            const balance = (await axios.get(`${BASE_URL}/balances?balance=${address}`)).data.data;
+            const request = (await axios.get(`${BASE_URL}/transactions?from=${address}&tx=${(currentPage - 1) * 10}&window=10`)).data;
+            commit('updateWallet', { address: address, balance: balance, transactions: request.data, title: title + address, metaData: request.meta_data });
         },
 
         async getTransactions({ commit, state }, { currentPage, pending }) {
@@ -146,7 +147,7 @@ export default new Vuex.Store({
         wallets: (state) => Object.values(state.wallets),
         validatedTransactions: (state) => (address) => {
             if (address in state.wallets) {
-                return state.wallets[address].transactions.filter(transaction => transaction.status === 'validated');
+                return state.wallets[address].transactions;
             }
 
             return [];

@@ -57,17 +57,14 @@ export default class App extends Vue {
     public port = 4567;
 
     initWallet!: () => Promise<void>;
-    sync !: () => Promise<void>;
+    sync !: (payload: any) => Promise<void>;
 
     async created() {
       this.username = await AppStorage.getItem("username");
-      await this.sync();
-      setInterval(async () => this.sync(), 5000);
     }
 
     async mounted(): Promise<void> {
         await this.initWallet();
-        console.log(Wallet.mnemonicToPrivateKey('bind grunt joke slab debris mean build cry image solid eternal sign'))
     }
 
     @Watch('port')
