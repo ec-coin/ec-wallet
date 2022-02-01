@@ -1,8 +1,8 @@
 <template>
     <div id="app">
-        <input type="number" v-model="port">
+        <!-- <input type="number" v-model="port"> -->
         <template v-if="hasAWallet && isWalletUnlocked">
-            <b-container>
+            <!-- <b-container> -->
                 <b-navbar toggleable="lg" type="dark" variant="primary">
                     <b-navbar-brand href="#">EC Wallet - {{ username }}</b-navbar-brand>
 
@@ -22,7 +22,7 @@
                 <div class="my-4"></div>
                 <router-view></router-view>
                 <div class="my-4"></div>
-            </b-container>
+            <!-- </b-container> -->
         </template>
         <template v-if="hasAWallet && !isWalletUnlocked">
             <UnlockWallet></UnlockWallet>
