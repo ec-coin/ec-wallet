@@ -5,25 +5,7 @@
                 <b-button block v-b-toggle="'accordion' + wallet.address" variant="primary">{{ wallet.name }} ({{ wallet.balance }} EC)</b-button>
             </b-card-header>
             <b-collapse :id="'accordion' + wallet.address" visible accordion="my-accordion" role="tabpanel">
-                <b-card-body>
-                    <h4>Transactions</h4>
-                    <b-table responsive striped hover
-                             :items="validatedTransactions(wallet.address)"
-                             :per-page="perPage"
-                             :current-page="currentPage"
-                    ></b-table>
-
-                    <b-pagination
-                        v-model="currentPage"
-                        :total-rows="validatedTransactions(wallet.address).length"
-                        :per-page="perPage"
-                        aria-controls="my-table"
-                        limit="7"
-                        align="fill"
-                        first-number
-                        last-number
-                    ></b-pagination>
-                </b-card-body>
+              <TransactionsOverview title="Transactions" :wallet-address="wallet.address" :transactions="validatedTransactions(wallet.address)" :pending-or-not="'full'"/>
             </b-collapse>
         </b-card>
     </div>
@@ -32,8 +14,12 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import {mapGetters} from "vuex";
+import TransactionsOverview from "@/components/transactions/TransactionsOverview.vue";
 
 @Component({
+    components: {
+      TransactionsOverview
+    },
     computed: {
         ...mapGetters(['wallets', 'validatedTransactions'])
     }
@@ -41,6 +27,15 @@ import {mapGetters} from "vuex";
 export default class AccountList extends Vue {
     public currentPage = 1;
     public perPage = 10;
+
+    getTransactions !: (payload: any) => Promise<void>;
+
+    handleClick(event, pageNumber) {
+      this.currentPage = pageNumber;
+      console.log(event)
+      this.getTransactions({currentPage: this.currentPage});
+      console.log("22222222")
+    }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
