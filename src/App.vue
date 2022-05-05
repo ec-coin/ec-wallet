@@ -1,20 +1,19 @@
 <template>
     <div id="app">
         <!-- <input type="number" v-model="port"> -->
-        <template v-if="hasAWallet && isWalletUnlocked">
+        <template v-if="loggedIn">
             <!-- <b-container> -->
                 <b-navbar toggleable="lg" type="dark" variant="primary">
-                    <b-navbar-brand href="#">EC Wallet - {{ username }}</b-navbar-brand>
+                    <b-navbar-brand href="#">CGI QML - {{ "J. Mellema" }}</b-navbar-brand>
 
                     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
                     <b-collapse id="nav-collapse" is-nav>
                         <b-navbar-nav>
-                            <b-nav-item exact-active-class="active" to="/">Accounts</b-nav-item>
-                            <b-nav-item exact-active-class="active" to="/send">Send</b-nav-item>
-                            <b-nav-item exact-active-class="active" to="/receive">Receive</b-nav-item>
-                            <b-nav-item exact-active-class="active" to="/Stake">Stake</b-nav-item>
-                            <b-nav-item exact-active-class="active" to="/NetworkTX">(Network) Transactions</b-nav-item>
+                            <b-nav-item exact-active-class="active" to="/">Dashboard</b-nav-item>
+                            <b-nav-item exact-active-class="active" to="/send">Classify</b-nav-item>
+                            <b-nav-item exact-active-class="active" to="/receive">Settings</b-nav-item>
+                            <b-nav-item exact-active-class="active"  href="https://cgi-iot.visualstudio.com/quantumstage/_wiki/wikis/QuantumStage.wiki/234/Quantum-Computing">Wiki</b-nav-item>
                         </b-navbar-nav>
                     </b-collapse>
                 </b-navbar>
@@ -23,11 +22,8 @@
                 <div class="my-4"></div>
             <!-- </b-container> -->
         </template>
-        <template v-if="hasAWallet && !isWalletUnlocked">
+        <template v-if="!loggedIn">
             <UnlockWallet></UnlockWallet>
-        </template>
-        <template v-if="!hasAWallet && !isWalletUnlocked">
-            <SetupWallet></SetupWallet>
         </template>
     </div>
 </template>
@@ -37,25 +33,23 @@ import {Component, Vue, Watch} from 'vue-property-decorator';
 
 import SetupWallet from "@/components/init/SetupWallet.vue";
 import {mapActions, mapState} from "vuex";
-import UnlockWallet from "@/components/init/UnlockWallet.vue";
+import UnlockWallet from "@/components/init/Login.vue";
 import AppStorage from "@randlabs/encrypted-local-storage";
-import {Wallet} from "@/service/wallet";
 import {changeBaseUrl} from "@/main";
 
 @Component({
-    components: {SetupWallet, UnlockWallet},
+    components: {UnlockWallet},
     computed: {
-        ...mapState(['hasAWallet', 'isWalletUnlocked'])
+        ...mapState(['loggedIn'])
     },
     methods: {
-        ...mapActions(['initWallet', 'sync', 'getTransactions'])
+        ...mapActions(['sync', 'getTransactions'])
     }
 })
 export default class App extends Vue {
     public username = '';
     public port = 4567;
 
-    initWallet!: () => Promise<void>;
     sync !: (payload: any) => Promise<void>;
 
     async created() {
@@ -63,7 +57,7 @@ export default class App extends Vue {
     }
 
     async mounted(): Promise<void> {
-        await this.initWallet();
+      console.log()
     }
 
     @Watch('port')

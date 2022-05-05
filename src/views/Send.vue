@@ -67,7 +67,6 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {mapGetters, mapState} from "vuex";
 import axios from "axios";
-import {Wallet} from "@/service/wallet";
 import {BASE_URL} from "@/main";
 @Component({
     computed: {
@@ -102,7 +101,7 @@ export default class Send extends Vue {
 
         const timestamp = new Date().getTime();
         console.log(wallet);
-        await axios.post(`${BASE_URL}/transactions`,
+        /*await axios.post(`${BASE_URL}/transactions`,
             {
                 "from": wallet.address,
                 "to": this.to,
@@ -121,7 +120,7 @@ export default class Send extends Vue {
         ).catch(error => {
             console.log(error.message);
             console.log(error);
-        });
+        });*/
 
         console.log("TX has been sent");
         this.send = true;

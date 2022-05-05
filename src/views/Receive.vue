@@ -32,7 +32,6 @@
 <script lang="ts">
 import {Component, Vue, Watch} from 'vue-property-decorator';
 import {mapGetters, mapState} from "vuex";
-import {Wallet} from "@/service/wallet"; // @ is an alias to /src
 import VueQrCode from 'vue-weblineindia-qrcode'
 @Component({
   components: {

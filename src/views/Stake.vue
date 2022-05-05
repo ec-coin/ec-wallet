@@ -48,7 +48,6 @@
 import {Component, Vue} from 'vue-property-decorator';
 import axios from "axios";
 import {mapGetters, mapState} from "vuex";
-import {Wallet} from "@/service/wallet";
 import {BASE_URL} from "@/main";
 
 @Component({
@@ -111,7 +110,7 @@ export default class Stake extends Vue {
         const timestamp = new Date().getTime();
         const wallet = (this as any).wallets.find(w => w.address == this.selectedFrom[0]);
 
-        await axios.post(`${BASE_URL}/transactions`,
+        /*await axios.post(`${BASE_URL}/transactions`,
             {
                 "from": wallet.address,
                 "to": this.selectedTo[0],
@@ -129,7 +128,7 @@ export default class Stake extends Vue {
             }
         ).catch(error => {
             console.log(error.message);
-        });
+        });*/
 
         this.send = true;
     }

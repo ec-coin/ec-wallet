@@ -19,14 +19,11 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 
 Vue.use(VueQrcodeReader);
-export let BASE_URL = 'http://178.63.163.115:4567';
-//export let BASE_URL = 'http://localhost:4567';
+export let BASE_URL = 'https://ml-service-api.azurewebsites.net';
 
 export function changeBaseUrl(url) {
   BASE_URL = url;
 }
-
-//export const BASE_URL = 'http://seed001.ec.dylaan.nl:4567/';
 
 new Vue({
   router,

@@ -1,15 +1,15 @@
 <template>
     <b-container>
-        <h2>Unlock your wallet</h2>
+        <h2>Login</h2>
 
         <b-alert variant="danger" v-if="incorrectPassword" show>This password is incorrect!</b-alert>
 
         <b-form @submit="submit">
             <b-form-group
                 id="input-group-1"
-                label="Password:"
+                label="API token:"
                 label-for="input-1"
-                description="Enter password to access your EC wallet">
+                description="Enter your API token to access CGI QML">
                 <b-form-input
                     id="input-1"
                     v-model="password"
@@ -18,7 +18,7 @@
                     required
                 ></b-form-input>
             </b-form-group>
-            <b-button type="submit" variant="primary" block :disabled="password.length < 3">Unlock</b-button>
+            <b-button type="submit" variant="primary" block :disabled="password.length < 3">Login</b-button>
         </b-form>
     </b-container>
 </template>
@@ -29,7 +29,7 @@ import {mapActions, mapState} from "vuex";
 
 @Component({
     methods: {
-        ...mapActions(['unlockWallet'])
+        ...mapActions(['login'])
     },
     computed: {
         ...mapState(['incorrectPassword'])
@@ -37,11 +37,11 @@ import {mapActions, mapState} from "vuex";
 })
 export default class UnlockWallet extends Vue {
     public password = '';
-    unlockWallet!: (payload: any) => Promise<void>;
+    login!: (payload: any) => Promise<void>;
 
     async submit(e: any): Promise<void> {
         e.preventDefault();
-        await this.unlockWallet(this.password);
+        await this.login({name: "bob", token: this.password});
     }
 }
 </script>

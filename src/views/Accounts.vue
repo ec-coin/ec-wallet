@@ -1,32 +1,26 @@
 <template>
     <b-container>
         <b-row>
-            <b-col>
-                <AccountCreator></AccountCreator>
-                <div class="my-4"></div>
-                <AccountImporter></AccountImporter>
-            </b-col>
-            <b-col cols="9">
-                <AccountList></AccountList>
-            </b-col>
+          <b-col cols="12">
+            <TransactionsOverview title="Pending transactions" :transactions="pendingTransactions" :wallet-address="''" :pending-or-not="true"/>
+          </b-col>
         </b-row>
     </b-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import AccountCreator from '@/components/account/AccountCreator.vue';
-import AccountImporter from "@/components/account/AccountImporter.vue";
-import AccountList from "@/components/account/AccountList.vue"; // @ is an alias to /src
+import TransactionsOverview from "@/components/transactions/TransactionsOverview.vue";
+import {mapGetters} from "vuex"; // @ is an alias to /src
 
 @Component({
     components: {
-        AccountList,
-        AccountImporter,
-        AccountCreator
+      TransactionsOverview
     }
 })
-export default class Accounts extends Vue {}
+export default class Accounts extends Vue {
+  public pendingTransactions = [{"address": "hello"}]
+}
 </script>
 
 <style lang="scss" scoped>

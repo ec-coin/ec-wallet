@@ -1,13 +1,13 @@
 <template>
   <b-card-body>
-    <h4>{{ title }} - {{ totalRows[title + walletAddress] }}</h4>
+    <h4>{{ title }} - {{ 100 }}</h4>
     <b-table responsive striped hover
              :items="transactions"
     ></b-table>
 
     <b-pagination
         v-model="currentPage"
-        :total-rows="totalRows[title + walletAddress]"
+        :total-rows="100"
         :per-page="perPage"
         aria-controls="my-table"
         align="fill"
@@ -25,10 +25,10 @@ import {mapActions, mapGetters} from "vuex";
 
 @Component({
   computed: {
-    ...mapGetters(['networkTransactions', 'totalRows'])
+    ...mapGetters(['networkTransactions'])
   },
   methods: {
-    ...mapActions(['getTransactions', 'sync'])
+    ...mapActions(['getMLRequests', 'sync'])
   }
 })
 export default class TransactionsOverview extends Vue {
@@ -49,7 +49,7 @@ export default class TransactionsOverview extends Vue {
       this.getAllTransactions();
     }
 
-    getTransactions !: (payload: any) => Promise<void>;
+    getMLRequests !: (payload: any) => Promise<void>;
     sync !: (payload: any) => Promise<void>;
 
     handleClick(event, pageNumber) {
@@ -58,12 +58,13 @@ export default class TransactionsOverview extends Vue {
     }
 
     getAllTransactions() {
-      if (this.pendingOrNot === 'full') {
+      /* if (this.pendingOrNot === 'full') {
         this.sync({ currentPage: this.currentPage, title: this.title, address: this.walletAddress })
       }
       else {
-        this.getTransactions({currentPage: this.currentPage, pending: this.pendingOrNot});
-      }
+        this.getMLRequests({currentPage: this.currentPage, pending: this.pendingOrNot});
+      } */
+      this.getMLRequests({currentPage: this.currentPage, pending: this.pendingOrNot});
     }
 }
 </script>

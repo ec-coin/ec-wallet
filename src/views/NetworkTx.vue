@@ -15,14 +15,12 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import AccountList from "@/components/account/AccountList.vue";
 import TransactionsOverview from "@/components/transactions/TransactionsOverview.vue";
 import {mapGetters} from "vuex"; // @ is an alias to /src
 
 @Component({
   components: {
     TransactionsOverview,
-    AccountList,
   },
   computed: {
     ...mapGetters(['networkTransactions', 'pendingTransactions'])
