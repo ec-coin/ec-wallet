@@ -75,7 +75,6 @@ export default new Vuex.Store({
                     },
                     (error) => {
                         console.log("ERRORRRRR")
-                        console.log(error)
                         const status = error.response.status
                     }
                 );
